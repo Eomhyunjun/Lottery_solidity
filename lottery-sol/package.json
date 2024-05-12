@@ -1,0 +1,22 @@
+{
+  "name": "lottery-sol",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tv": "truffle version",
+    "ti": "truffle init",
+    "tc": "truffle compile",
+    "tm": "truffle migrate --reset",
+    "tt": "truffle test test/lottery.test.js",
+    "con": "truffle console",
+    "ga": "ganache --wallet.mnemonic tutorial"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ganache": "^7.9.2",
+    "truffle": "^5.11.5"
+  }
+}
