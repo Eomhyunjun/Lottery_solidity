@@ -2,7 +2,7 @@ import { css } from '@emotion/css'
 import Header from './components/Header.js'
 import Lottery from './components/lottery/Lottery.js'
 import Ranking from './components/Ranking.js'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getWalletInfo } from './utils/lotteryWeb3.js'
 
 function App() {

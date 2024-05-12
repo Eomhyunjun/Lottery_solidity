@@ -12,40 +12,19 @@ import { Web3 } from 'web3'
  * @returns {object} - wallet info
  */
 export async function getWalletInfo() {
-  // window.ethereum 객체가 있는지 확인합니다.
   if (window.ethereum) {
-    try {
-      // 사용자에게 이더리움 계정 접근 권한을 요청합니다.
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      })
-      // 첫 번째 계정 주소를 가져옵니다.
-      const account = accounts[0]
+    const web3 = new Web3(window.ethereum)
+    await window.ethereum.request({ method: 'eth_requestAccounts' })
 
-      // 이더리움 네트워크의 ID를 가져옵니다.
-      const networkId = await window.ethereum.request({ method: 'net_version' })
+    const accounts = await web3.eth.getAccounts()
+    const balance = await web3.eth.getBalance(accounts[0])
 
-      // 첫 번째 계정의 이더리움 잔액을 wei 단위로 가져옵니다.
-      const balance = await window.ethereum.request({
-        method: 'eth_getBalance',
-        params: [account, 'latest'],
-      })
-
-      // wei를 이더(Ether) 단위로 변환합니다.
-      const balanceInEther = Web3.utils.fromWei(balance, 'ether')
-      // 계정 주소, 네트워크 ID, 이더리움 잔액을 반환합니다.
-      return {
-        account,
-        networkId,
-        balance: balanceInEther,
-      }
-    } catch (error) {
-      console.error('An error occurred:', error)
-      return null
+    return {
+      account: accounts[0],
+      balance,
     }
   } else {
-    alert('Please install MetaMask!')
-    return null
+    alert('Please download metamask')
   }
 }
 
