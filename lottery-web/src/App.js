@@ -3,17 +3,30 @@ import Header from './components/Header.js'
 import Lottery from './components/lottery/Lottery.js'
 import Ranking from './components/Ranking.js'
 import { useState } from 'react'
+import { getWalletInfo } from './utils/lotteryWeb3.js'
 
 function App() {
-  const [isWalletConnected, setIsWalletConnected] = useState(false)
+  const [walletInfo, setWalletInfo] = useState(null)
 
   return (
     <div className={container}>
       <Header />
-      {isWalletConnected ? (
-        <div>지갑 주소, 잔액</div>
+      {walletInfo ? (
+        <div>
+          <p>지갑 주소: {walletInfo.account}</p>
+          <p>잔액: {Number(walletInfo.balance)} ETH</p>
+        </div>
       ) : (
-        <div>지갑 연결하여, 베팅에 참가하기</div>
+        <button
+          onClick={() => {
+            const walletInfoPromise = getWalletInfo()
+            walletInfoPromise.then((wallet) => {
+              setWalletInfo(wallet)
+            })
+          }}
+        >
+          메타마스크 지갑 연결하여, 베팅에 참가하기
+        </button>
       )}
       <Lottery />
       <Ranking />

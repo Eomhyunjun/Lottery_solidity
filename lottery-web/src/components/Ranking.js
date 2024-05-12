@@ -17,7 +17,7 @@ const Ranking = () => {
           <th>지갑 주소</th>
           <th>총 당첨금</th>
           <th>당첨 횟수</th>
-          <th>당첨 회차</th>
+          <th>자세히 보기</th>
         </tr>
       </thead>
       <tbody>
@@ -26,23 +26,21 @@ const Ranking = () => {
           <td>0x1234...5678</td>
           <td>1000</td>
           <td>3</td>
-          <td>
-            <button>자세히보기</button>
-          </td>
+          <td>자세히보기</td>
         </tr>
         <tr>
           <td>2</td>
           <td>0x1234...5678</td>
           <td>1000</td>
           <td>3</td>
-          <button>자세히보기</button>
+          <td>자세히보기</td>
         </tr>
         <tr>
           <td>3</td>
           <td>0x1234...5678</td>
           <td>1000</td>
           <td>3</td>
-          <button>자세히보기</button>
+          <td>자세히보기</td>
         </tr>
       </tbody>
     </table>
