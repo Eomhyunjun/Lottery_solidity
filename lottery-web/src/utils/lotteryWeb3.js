@@ -76,7 +76,25 @@ export async function startGame() {
   }
 }
 
-export async function bet(number, guess) {}
+export async function bet(number, guess) {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    const accounts = await web3.eth.getAccounts()
+
+    const bet = await lottery_con.methods
+      .bet(number, guess)
+      .send({
+        from: accounts[0],
+        to: contract_addr,
+        value: window.web3.utils.toWei('5000000000000000', 'wei'),
+        gas: 300000,
+        gasPrice: window.web3.utils.toWei('5', 'gwei'),
+      })
+      .then((result) => {
+        console.log(result)
+      })
+    console.log(bet)
+  }
+}
 
 /**
  * 이벤트
