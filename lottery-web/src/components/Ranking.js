@@ -9,6 +9,7 @@ import React from 'react'
  */
 
 const Ranking = () => {
+  // bet_events에서 당첨자 정보를 가져와서 표시
   return (
     <table className={table}>
       <thead>
@@ -48,8 +49,6 @@ const Ranking = () => {
 }
 
 export default Ranking
-
-const container = css``
 
 const table = css`
   text-align: center;

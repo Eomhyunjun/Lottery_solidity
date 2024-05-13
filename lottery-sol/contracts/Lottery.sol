@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 
 contract Lottery {
     address public owner;
-    uint[3] luckyNumbers; // 세개의 숫자
-    uint[6] finalNumbers; // 6개 숫자
-    bool[3] answer; // 각 숫자가 존재하는지에 대한 정답
+    uint[3] public luckyNumbers; // 세개의 숫자
+    uint[6] public finalNumbers; // 6개 숫자
+    bool[3] public answer; // 각 숫자가 존재하는지에 대한 정답
     bool public gameStarted = false; // 게임 상태
-    uint randomNumber;
-    uint[3] totalBetAmount;
+    uint public randomNumber;
+    uint[3] public totalBetAmount;
     
     uint256 constant internal MIN_BET_AMOUNT = 1 * 10 ** 17; // 베팅 최소 금액, 1 이더
 
@@ -27,6 +27,9 @@ contract Lottery {
     uint256 private _tail;
     // mapping (uint => mapping(bool => BetInfo[])) private _bets; // 베팅 정보
     mapping (uint256 => BetInfo) private _bets;
+
+    // event -> 게임 시작 시 -> luckyNumbers 출력
+    event GAME_STARTED(uint[3] luckyNumbers);
 
     // event -> bet이 진행될 때마다 -> bettor, number, guess, amount, 베팅한 곳의 bettingAmount 출력
     event BET(uint256 index, address bettor, uint256 amount, uint number, bool guess, uint256 answerBlockNumber);
@@ -76,6 +79,7 @@ contract Lottery {
             
         }
         gameStarted = true;
+        emit GAME_STARTED(luckyNumbers);
     }
     
     // 베팅 함수 -> 베팅 금액과 bettors를 알 수 있음

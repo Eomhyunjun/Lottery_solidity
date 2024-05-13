@@ -1,6 +1,8 @@
 import { css } from '@emotion/css'
 
 import React, { useState } from 'react'
+import { getGameState } from '../../utils/lotteryWeb3'
+import GameInProgress from './GameInProgress'
 
 /**
  * 베팅 관련 View
@@ -14,17 +16,26 @@ import React, { useState } from 'react'
  */
 
 const Lottery = () => {
-  const [gameState, setGameState] = useState(-1) // -1: 게임 종료 상태, 0: 게임 시작 됨, 1: 게임 진행 중
+  const [gameState, setGameState] = useState(-1) //  0: 게임 종료 상태, 1: 게임 진행 중
+
+  useState(() => {
+    getGameState().then((state) => {
+      const state_to_number = state ? 1 : 0
+      setGameState(state_to_number)
+    })
+  }, [window.web3])
 
   return (
-    <div>
-      {gameState === -1 && <div>게임 종료 상태</div>}
-      {gameState === 0 && <div>게임 시작 됨</div>}
-      {gameState === 1 && <div>게임 진행 중</div>}
+    <div className={lotteryWrapper}>
+      {gameState === -1 && <div>게임 시작 대기</div>}
+      {gameState === 0 && <div>게임 종료 상태</div>}
+      {gameState === 1 && <GameInProgress gameState={gameState} />}
     </div>
   )
 }
 
 export default Lottery
 
-const container = css``
+const lotteryWrapper = css`
+  padding: 20px;
+`
