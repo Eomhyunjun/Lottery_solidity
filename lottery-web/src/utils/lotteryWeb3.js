@@ -1,14 +1,24 @@
 import { Web3 } from 'web3'
-import { lottery_abi, contract_addr, owner_addr } from './contract_val'
+import { lottery_abi, contract_addr, owner_priv } from './contract_val'
 
+// 브라우저에서 사용할 수 있는 web3 객체 생성
 const web3 = new Web3(window.ethereum)
 window.web3 = web3
-
 const lottery_con = new window.web3.eth.Contract(lottery_abi, contract_addr)
 
+// 로컬 테스트를 위한 web3 객체 생성
+const rpcURL = 'http://localhost:8545'
+const local_web3 = new Web3(new Web3.providers.HttpProvider(rpcURL))
+export const owner_wallet = local_web3.eth.accounts.wallet.add(owner_priv)
+const local_lottery_con = new web3.eth.Contract(lottery_abi, contract_addr)
+local_lottery_con.handleRevert = true
+
 /** 함수 리스트
- * getWalletInfo - 지갑 정보 불러오기
  *
+ * getWalletInfo - 지갑 정보 불러오기
+ * getGameState - 게임 상태 변수 불러오기
+ * getLuckyNumbers - 당첨 번호 배열 불러오기
+ * startGame - 게임 시작 함수
  */
 
 /**
@@ -59,20 +69,23 @@ export async function getLuckyNumbers() {
 
 // 컨트랙트 메서드 불러오기
 export async function startGame() {
-  if (window.web3 && window.web3.eth && window.ethereum) {
-    const owner = await lottery_con.methods
-      .startGame()
-      .send({
-        from: owner_addr,
-        to: contract_addr,
-        value: window.web3.utils.toWei('1', 'ether'),
-        gas: 300000,
-        gasPrice: window.web3.utils.toWei('5', 'gwei'),
+  if (local_web3 && local_web3.eth && local_web3.eth.accounts) {
+    const providersAccounts = await local_web3.eth.getAccounts()
+
+    const defaultAccount = providersAccounts[0]
+
+    console.log(defaultAccount)
+
+    try {
+      const receipt = await local_lottery_con.methods.startGame().send({
+        from: defaultAccount,
+        gas: 1000000,
+        gasPrice: '10000000000',
       })
-      .then((result) => {
-        console.log(result)
-      })
-    console.log(owner)
+      console.log('Transaction Hash: ' + receipt.transactionHash)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 

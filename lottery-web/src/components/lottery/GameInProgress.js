@@ -1,18 +1,17 @@
 import { css } from '@emotion/css'
-
-import React, { useEffect, useState } from 'react'
 import { bet, getLuckyNumbers } from '../../utils/lotteryWeb3'
+import { useEffect } from 'react'
 
-const GameInProgress = ({ gameState }) => {
-  const [luckyNumbers, setLuckyNumbers] = useState([])
-
+const GameInProgress = ({ luckyNumbers, setLuckyNumbers }) => {
   useEffect(() => {
-    if (gameState === 1) {
-      getLuckyNumbers().then((numbers) => {
-        setLuckyNumbers([...numbers])
-      })
+    getLuckyNumbers().then((numbers) => {
+      setLuckyNumbers([...numbers])
+    })
+
+    return () => {
+      setLuckyNumbers([])
     }
-  }, [gameState])
+  }, [setLuckyNumbers])
 
   return (
     <div>
