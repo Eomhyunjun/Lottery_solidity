@@ -10,6 +10,7 @@ function App() {
   const [gameState, setGameState] = useState(-1) //  0: 게임 종료 상태, 1: 게임 진행 중
   const [walletInfo, setWalletInfo] = useState(null)
   const [luckyNumbers, setLuckyNumbers] = useState([])
+  const [answer, setAnswer] = useState(null)
 
   useEffect(() => {
     // 소켓 연결을 위한 web3 객체 생성
@@ -21,12 +22,24 @@ function App() {
       lottery_abi,
       contract_addr
     )
-    const subscription = socket_lottery_con.events.GAME_STARTED()
-    subscription.on('data', (event) => {
-      setGameState(1)
-      setLuckyNumbers(event.returnValues.luckyNumbers)
-    })
+    // const sub_startGame_event = socket_lottery_con.events.GAME_STARTED()
+    // sub_startGame_event.on('data', (event) => {
+    //   setGameState(1)
+    //   setLuckyNumbers(event.returnValues.luckyNumbers)
+    //   console.log('게임이 시작되었습니다.')
+    //   console.log(event)
+    // })
+
+    // const sub_endGame_event = socket_lottery_con.events.GAME_ENDED()
+    // sub_endGame_event.on('data', (event) => {
+    //   setGameState(0)
+    //   setAnswer(event.returnValues.finalNumExists)
+    //   console.log('게임이 종료되었습니다.')
+    //   console.log(event)
+    // })
   }, [])
+
+  console.log('ENDGAME======:', answer)
 
   return (
     <div className={container}>

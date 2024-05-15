@@ -18,8 +18,16 @@ contract Lottery {
     uint256 constant internal MIN_BET_AMOUNT = 1 * 10 ** 18; // 베팅 최소 금액, 1 이더
     uint public tmp_randomNumber; // 랜덤 숫자 임시 저장 변수
     
-    uint[3] public luckyNumbers; // 세개의 숫자
-    mapping(uint => bool) private luckyNumExists;  // 세 개의 숫자 존재 유무
+    
+    struct Game {
+        uint[3] luckyNumbers;
+        mapping(uint => bool) luckyNumExists;
+        uint[6] finalNumbers;
+        mapping(uint => bool) finalNumExists;
+    }
+
+    mapping (uint256 => Game) private games;
+    uint256 private _games_tail = 0;
 
     struct BetInfo {
         address payable bettor; // 베팅을 한 사람 주소
@@ -29,6 +37,7 @@ contract Lottery {
     }
 
     event GAME_STARTED(uint[3] luckyNumbers);
+    event GAME_ENDED(uint[6] finalNumbers);
 
     constructor() {
         owner = msg.sender;
@@ -39,28 +48,51 @@ contract Lottery {
     _;
     }
 
-    function startGame() public onlyOwner { 
+    function startGame() public onlyOwner {
         require(!gameStarted, "Game has already started.");
 
-        for (uint i = 0; i < 3; i++) {
-            tmp_randomNumber = (generateRandomNumber(i) % 45 + 1);
+        Game storage game = games[_games_tail];
 
-            while(luckyNumExists[tmp_randomNumber]) {
-                tmp_randomNumber = (generateRandomNumber(i) % 45 + 1);
+        for (uint i = 0; i < 3; i++) {
+            tmp_randomNumber = generateRandomNumber(i) % 45 + 1;
+            while(game.luckyNumExists[tmp_randomNumber]) {
+                tmp_randomNumber = generateRandomNumber(i + 12) % 45 + 1;
             }
-            luckyNumbers[i] = tmp_randomNumber;
-            luckyNumExists[tmp_randomNumber] = true;
+            game.luckyNumbers[i] = tmp_randomNumber;
+            game.luckyNumExists[tmp_randomNumber] = true;
         }
+
         gameStarted = true;
-        emit GAME_STARTED(luckyNumbers);
+        emit GAME_STARTED(game.luckyNumbers);
     }
 
     function endGame() public onlyOwner {
-        require(gameStarted, "Game has not started yet.");
+        require(gameStarted, "Game has not started yet");
+
+        Game storage game = games[_games_tail];
+
+        for (uint i = 0; i < 6; i++) {
+            tmp_randomNumber = generateRandomNumber(i) % 45 + 1;
+            while(game.finalNumExists[tmp_randomNumber]) {
+                tmp_randomNumber = generateRandomNumber(i + 12) % 45 + 1;
+            }
+            game.finalNumbers[i] = tmp_randomNumber;
+            game.finalNumExists[tmp_randomNumber] = true;
+        }
+
+        emit GAME_ENDED(game.finalNumbers);
+        
+        popGame();
+        _games_tail++;
         gameStarted = false;
     }
 
     function generateRandomNumber(uint seed) private view returns (uint) {
         return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, seed)));
+    }
+
+    function popGame() private onlyOwner returns (bool) {
+        delete games[_games_tail];
+        return true;
     }
 }

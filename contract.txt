@@ -1,7 +1,14 @@
 
-> lottery-sol@1.0.0 tm
-> truffle migrate --reset
+> lottery-sol@1.0.0 ta
+> truffle compile && truffle migrate --reset
 
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/Lottery.sol
+> Artifacts written to /Users/eomhyeonjun/now_code/Lottery_solidity/lottery-sol/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.21+commit.d9974bed.Emscripten.clang
 
 Compiling your contracts...
 ===========================
@@ -11,34 +18,34 @@ Compiling your contracts...
 Starting migrations...
 ======================
 > Network name:    'development'
-> Network id:      1715760612926
+> Network id:      1715768166692
 > Block gas limit: 30000000 (0x1c9c380)
 
 
 1_deploy_lottery_contract.js
 ============================
 
-   Deploying 'Lottery'
+   Replacing 'Lottery'
    -------------------
-   > transaction hash:    0x561e78fadc5e25e0e90f27192e757a645fc9b1a15a86d48fe929ebe95f6990d4
+   > transaction hash:    0x47663ba2c658fe8b3c147218755083fe0fa813f56364e459043893f0988a950b
    > Blocks: 0            Seconds: 0
-   > contract address:    0xC8cbDe94d91791d7Fd2282c04C021271449eFc4D
-   > block number:        1
-   > block timestamp:     1715760727
+   > contract address:    0xBfaD9A9982B2169E124F754b2F8036bCEA542137
+   > block number:        5
+   > block timestamp:     1715768684
    > account:             0xF76c9B7012c0A3870801eaAddB93B6352c8893DB
-   > balance:             999.99785877175
-   > gas used:            634438 (0x9ae46)
-   > gas price:           3.375 gwei
+   > balance:             999.990262757305290646
+   > gas used:            776045 (0xbd76d)
+   > gas price:           3.024074892 gwei
    > value sent:          0 ETH
-   > total cost:          0.00214122825 ETH
+   > total cost:          0.00234681819956214 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:       0.00214122825 ETH
+   > Total cost:     0.00234681819956214 ETH
 
 Summary
 =======
 > Total deployments:   1
-> Final cost:          0.00214122825 ETH
+> Final cost:          0.00234681819956214 ETH
 
 

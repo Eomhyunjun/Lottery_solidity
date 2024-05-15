@@ -23,6 +23,7 @@ const Lottery = ({
 }) => {
   useState(() => {
     getGameState().then((state) => {
+      console.log('getGameState', state)
       const state_to_number = state ? 1 : 0
       setGameState(state_to_number)
     })
