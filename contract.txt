@@ -1,0 +1,44 @@
+
+> lottery-sol@1.0.0 tm
+> truffle migrate --reset
+
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+Starting migrations...
+======================
+> Network name:    'development'
+> Network id:      1715748970820
+> Block gas limit: 30000000 (0x1c9c380)
+
+
+1_deploy_lottery_contract.js
+============================
+
+   Replacing 'Lottery'
+   -------------------
+   > transaction hash:    0xaac8acc9be54918bfe869297aa354261fb4bd7e26155e597b61464275e8d590b
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x7871142657951281b5C717B94DBC62F3aa5590d0
+   > block number:        24
+   > block timestamp:     1715755390
+   > account:             0xF76c9B7012c0A3870801eaAddB93B6352c8893DB
+   > balance:             999.961159869465693926
+   > gas used:            555015 (0x87807)
+   > gas price:           2.54599761 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00141306686351415 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.00141306686351415 ETH
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.00141306686351415 ETH
+
+
