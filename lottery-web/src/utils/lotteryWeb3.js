@@ -1,4 +1,4 @@
-import { Web3 } from 'web3'
+import { Web3, WebSocketProvider } from 'web3'
 import { lottery_abi, contract_addr, owner_priv } from './contract_val'
 
 // 브라우저에서 사용할 수 있는 web3 객체 생성
@@ -12,6 +12,8 @@ const local_web3 = new Web3(new Web3.providers.HttpProvider(rpcURL))
 export const owner_wallet = local_web3.eth.accounts.wallet.add(owner_priv)
 const local_lottery_con = new web3.eth.Contract(lottery_abi, contract_addr)
 local_lottery_con.handleRevert = true
+
+// 로컬 소켓 연결을 위한 web3 Provider 객체 생성
 
 /** 함수 리스트
  *
@@ -54,12 +56,30 @@ export async function getGameState() {
 export async function getLuckyNumbers() {
   if (window.web3 && window.web3.eth && window.ethereum) {
     try {
-      const numbers = []
-      for (let i = 0; i < 3; i++) {
-        // luckyNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
-        const number = await lottery_con.methods.luckyNumbers(i).call() // i번째 인덱스의 값을 가져옴
-        numbers.push(number)
-      }
+      // luckyNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
+      const event_val = await lottery_con.getPastEvents('GAME_STARTED', {
+        fromBlock: 0,
+        toBlock: 'latest',
+      })
+      const numbers = event_val.returnValues.luckyNumbers
+      console.log('lucky: ', numbers)
+      return numbers
+    } catch (error) {
+      console.error('Error fetching lucky numbers:', error)
+    }
+  }
+}
+
+export async function getFinalNumbers() {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    try {
+      // finalNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
+      const event_val = await lottery_con.getPastEvents('GAME_ENDED', {
+        fromBlock: 0,
+        toBlock: 'latest',
+      })
+      const numbers = event_val.returnValues.finalNumbers
+      console.log('final: ', numbers)
       return numbers
     } catch (error) {
       console.error('Error fetching lucky numbers:', error)

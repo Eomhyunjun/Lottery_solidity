@@ -20,7 +20,9 @@ const Header = ({ walletInfo, setWalletInfo }) => {
         {walletInfo ? (
           <div>
             <p>지갑 주소: {walletInfo.account}</p>
-            <p>잔액: {Number(walletInfo.balance)} ETH</p>
+            <p>
+              잔액: {window.web3.utils.fromWei(walletInfo.balance, 'ether')} ETH
+            </p>
           </div>
         ) : (
           <button

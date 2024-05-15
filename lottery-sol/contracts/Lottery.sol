@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// 1. owner가 게임 시작 함수 호출
-// 2. 1~45 숫자 중 숫자를 임의로 3개 생성하기.
+// [v] 1. owner가 게임 시작 함수 호출
+// [v] 2. 1~45 숫자 중 숫자를 임의로 3개 생성하기.
 // 3. 사람들은 각 숫자에 대해서 true or false로 베팅(ex.10, 15, 20) -> 정답 (n,y,n)
 // 4. 배팅 금액에 따른 배당 보여줌
-// 5. owner가 게임 종료 함수를 호출
-// 6. 1 ~ 45 숫자 중 6개를 뽑기
+// [v] 5. owner가 게임 종료 함수를 호출
+// [v] 6. 1 ~ 45 숫자 중 6개를 뽑기
 // 7. 6개 숫자 중 2번에서 뽑은 3개의 숫자가 있는 지 확인 후, 각 숫자에 대하여 있다면 true 없다면 false 측 승리
 // 8. 승리 배당을 받기
 // 9. 베팅 금액이 높은 순서대로 랭킹 보여줌
@@ -17,7 +17,6 @@ contract Lottery {
     bool public gameStarted = false; // 게임 상태
     uint256 constant internal MIN_BET_AMOUNT = 1 * 10 ** 18; // 베팅 최소 금액, 1 이더
     uint public tmp_randomNumber; // 랜덤 숫자 임시 저장 변수
-    
     
     struct Game {
         uint[3] luckyNumbers;

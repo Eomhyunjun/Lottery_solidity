@@ -1,28 +1,18 @@
 import { css } from '@emotion/css'
-import { bet, getLuckyNumbers } from '../../utils/lotteryWeb3'
-import { useEffect } from 'react'
+import { bet } from '../../utils/lotteryWeb3'
 
-const GameInProgress = ({ luckyNumbers, setLuckyNumbers }) => {
-  useEffect(() => {
-    getLuckyNumbers().then((numbers) => {
-      setLuckyNumbers([...numbers])
-    })
-
-    return () => {
-      setLuckyNumbers([])
-    }
-  }, [setLuckyNumbers])
-
+const GameInProgress = ({ luckyNumbers }) => {
   return (
     <div>
-      {luckyNumbers.map((number, index) => (
-        <div className={lotteryCard} key={index + 1}>
-          <p>{index}번 숫자</p>
-          <p>{Number(number)}</p>
-          <button onClick={() => bet(index, true)}>참</button>
-          <button onClick={() => bet(index, false)}>거짓</button>
-        </div>
-      ))}
+      {luckyNumbers.length > 0 &&
+        luckyNumbers.map((number, index) => (
+          <div className={lotteryCard} key={index + 1}>
+            <p>{index + 1}번 숫자</p>
+            <p>{Number(number)}</p>
+            <button onClick={() => bet(index, true)}>참</button>
+            <button onClick={() => bet(index, false)}>거짓</button>
+          </div>
+        ))}
     </div>
   )
 }
