@@ -65,7 +65,7 @@ export async function startGame() {
       .send({
         from: owner_addr,
         to: contract_addr,
-        value: window.web3.utils.toWei('5000000000000000', 'wei'),
+        value: window.web3.utils.toWei('1', 'ether'),
         gas: 300000,
         gasPrice: window.web3.utils.toWei('5', 'gwei'),
       })

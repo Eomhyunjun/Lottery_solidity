@@ -13,3 +13,8 @@
 7. 6개 숫자 중 2번에서 뽑은 3개의 숫자가 있는 지 확인 후, 각 숫자에 대하여 있다면 true 없다면 false 측 승리
 8. 승리 배당을 받기
 9. 베팅 금액이 높은 순서대로 랭킹 보여줌
+
+## 사용 방법
+### bringABI_SoltoWeb.sh
+- lottery-sol에서 sol 파일을 빌드하여 생성된 ABI를, lottery-web의 abi 변수에 복사하는 쉘 입니다.
+- jq 명령어를 필요로 합니다. / Mac: `brew install jq`
