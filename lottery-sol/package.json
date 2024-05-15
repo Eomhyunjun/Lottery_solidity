@@ -11,7 +11,8 @@
     "tm": "truffle migrate --reset",
     "tt": "truffle test test/lottery.test.js",
     "con": "truffle console",
-    "ga": "ganache --wallet.mnemonic tutorial"
+    "ga": "ganache --wallet.mnemonic tutorial",
+    "ta": "truffle compile && truffle migrate --reset"
   },
   "author": "",
   "license": "ISC",

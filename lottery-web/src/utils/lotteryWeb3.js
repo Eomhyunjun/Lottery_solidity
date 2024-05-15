@@ -1,10 +1,10 @@
 import { Web3 } from 'web3'
-import { abi, contract_addr, owner_addr } from './contract_val'
+import { lottery_abi, contract_addr, owner_addr } from './contract_val'
 
 const web3 = new Web3(window.ethereum)
 window.web3 = web3
 
-const lottery_con = new window.web3.eth.Contract(abi, contract_addr)
+const lottery_con = new window.web3.eth.Contract(lottery_abi, contract_addr)
 
 /** 함수 리스트
  * getWalletInfo - 지갑 정보 불러오기
