@@ -1,13 +1,7 @@
 import { css } from '@emotion/css'
 
 import React, { useState } from 'react'
-import {
-  bet_events,
-  getFinalNumbers,
-  getGameState,
-  getLuckyNumbers,
-  startGame,
-} from '../../utils/lotteryWeb3'
+import { endGame, getGameState, startGame } from '../../utils/lotteryWeb3'
 import GameInProgress from './GameInProgress'
 
 /**
@@ -21,14 +15,7 @@ import GameInProgress from './GameInProgress'
  *
  */
 
-const Lottery = ({
-  gameState,
-  setGameState,
-  luckyNumbers,
-  setLuckyNumbers,
-  finalNumbers,
-  setFinalNumbers,
-}) => {
+const Lottery = ({ gameState, setGameState, luckyNumbers, finalNumbers }) => {
   useState(() => {
     getGameState().then((state) => {
       const state_to_number = state ? 1 : 0
@@ -43,6 +30,7 @@ const Lottery = ({
   return (
     <div className={lotteryWrapper}>
       <button onClick={() => startGame()}>게임 시작 버튼</button>
+      <button onClick={() => endGame()}>게임 종료 버튼</button>
       {gameState === -1 && <div>게임 시작 대기</div>}
       {gameState === 0 && <GameInProgress luckyNumbers={finalNumbers} />}
       {gameState === 1 && <GameInProgress luckyNumbers={luckyNumbers} />}

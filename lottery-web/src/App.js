@@ -63,11 +63,11 @@ function App() {
       })
       getLuckyNumbers().then((numbers) => {
         console.log('set-luckyNumbers: ', numbers)
-        setLuckyNumbers(numbers)
+        setLuckyNumbers(numbers ? numbers : [])
       })
     } else if (gameState === 0) {
       getFinalNumbers().then((numbers) => {
-        setFinalNumbers(numbers)
+        setFinalNumbers(numbers ? numbers : [])
       })
     }
     return () => {
@@ -86,9 +86,7 @@ function App() {
         gameState={gameState}
         setGameState={setGameState}
         luckyNumbers={luckyNumbers}
-        setLuckyNumbers={setLuckyNumbers}
         finalNumbers={finalNumbers}
-        setFinalNumbers={setFinalNumbers}
       />
       {betEvent.length > 0 && (
         <BettingBoard betEvent={betEvent} luckyNumbers={luckyNumbers} />

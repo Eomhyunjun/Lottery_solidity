@@ -1,4 +1,4 @@
-import { Web3, WebSocketProvider } from 'web3'
+import { Web3 } from 'web3'
 import { lottery_abi, contract_addr, owner_priv } from './contract_val'
 
 // 브라우저에서 사용할 수 있는 web3 객체 생성
@@ -62,6 +62,24 @@ export async function startGame() {
 
     try {
       const receipt = await local_lottery_con.methods.startGame().send({
+        from: defaultAccount,
+        gas: 1000000,
+        gasPrice: '10000000000',
+      })
+      console.log('Transaction Hash: ' + receipt.transactionHash)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+}
+export async function endGame() {
+  if (local_web3 && local_web3.eth && local_web3.eth.accounts) {
+    const providersAccounts = await local_web3.eth.getAccounts()
+
+    const defaultAccount = providersAccounts[0]
+
+    try {
+      const receipt = await local_lottery_con.methods.endGame().send({
         from: defaultAccount,
         gas: 1000000,
         gasPrice: '10000000000',
