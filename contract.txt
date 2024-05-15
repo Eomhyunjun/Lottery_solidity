@@ -5,7 +5,10 @@
 
 Compiling your contracts...
 ===========================
-> Everything is up to date, there is nothing to compile.
+> Compiling ./contracts/Lottery.sol
+> Artifacts written to /Users/eomhyeonjun/now_code/Lottery_solidity/lottery-sol/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.21+commit.d9974bed.Emscripten.clang
 
 Compiling your contracts...
 ===========================
@@ -24,25 +27,25 @@ Starting migrations...
 
    Replacing 'Lottery'
    -------------------
-   > transaction hash:    0x55e01714527c9fe16db0c2433b7a6484fcf5569bca60ec2d034c772df90026b5
+   > transaction hash:    0x8a61517ef010a91f8965d3dd412242628a0617748aef699ac358bb338ed9fba0
    > Blocks: 0            Seconds: 0
-   > contract address:    0x8745458411F2ea12A38B0f2c66739a16CB547286
-   > block number:        32
-   > block timestamp:     1715790838
+   > contract address:    0x93926d65fCC81505490A0581a3c30597c8dA587A
+   > block number:        53
+   > block timestamp:     1715794207
    > account:             0xF76c9B7012c0A3870801eaAddB93B6352c8893DB
-   > balance:             984.969142679243321957
-   > gas used:            1139561 (0x116369)
-   > gas price:           2.515196785 gwei
+   > balance:             971.947892589518947989
+   > gas used:            1155859 (0x11a313)
+   > gas price:           2.500974637 gwei
    > value sent:          0 ETH
-   > total cost:          0.002866220163511385 ETH
+   > total cost:          0.002890774042948183 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:     0.002866220163511385 ETH
+   > Total cost:     0.002890774042948183 ETH
 
 Summary
 =======
 > Total deployments:   1
-> Final cost:          0.002866220163511385 ETH
+> Final cost:          0.002890774042948183 ETH
 
 

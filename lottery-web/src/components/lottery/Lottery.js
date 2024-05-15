@@ -15,7 +15,13 @@ import GameInProgress from './GameInProgress'
  *
  */
 
-const Lottery = ({ gameState, setGameState, luckyNumbers, finalNumbers }) => {
+const Lottery = ({
+  poolAmount,
+  gameState,
+  setGameState,
+  luckyNumbers,
+  finalNumbers,
+}) => {
   useState(() => {
     getGameState().then((state) => {
       const state_to_number = state ? 1 : 0
@@ -32,8 +38,12 @@ const Lottery = ({ gameState, setGameState, luckyNumbers, finalNumbers }) => {
       <button onClick={() => startGame()}>게임 시작 버튼</button>
       <button onClick={() => endGame()}>게임 종료 버튼</button>
       {gameState === -1 && <div>게임 시작 대기</div>}
-      {gameState === 0 && <GameInProgress luckyNumbers={finalNumbers} />}
-      {gameState === 1 && <GameInProgress luckyNumbers={luckyNumbers} />}
+      {gameState === 0 && (
+        <GameInProgress luckyNumbers={finalNumbers} poolAmount={poolAmount} />
+      )}
+      {gameState === 1 && (
+        <GameInProgress luckyNumbers={luckyNumbers} poolAmount={poolAmount} />
+      )}
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { contract_addr, lottery_abi } from './utils/contract_val.js'
 import BettingBoard from './components/BettingBoard.js'
 import {
   bet_events,
+  getBettingAmount,
   getFinalNumbers,
   getLuckyNumbers,
 } from './utils/lotteryWeb3.js'
@@ -18,6 +19,11 @@ function App() {
   const [luckyNumbers, setLuckyNumbers] = useState([])
   const [finalNumbers, setFinalNumbers] = useState([])
   const [betEvent, setBetEvent] = useState([])
+  const [poolAmount, setPoolAmount] = useState([
+    { 0: 0, 1: 0 },
+    { 0: 0, 1: 0 },
+    { 0: 0, 1: 0 },
+  ])
 
   useEffect(() => {
     // 소켓 연결을 위한 web3 객체 생성
@@ -51,15 +57,32 @@ function App() {
       bet_events().then((event) => {
         console.log('bet_event: ', event)
         setBetEvent(event)
+        initBetAmount()
       })
     })
+
+    initBetAmount()
   }, [])
+
+  function initBetAmount() {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 2; j++) {
+        getBettingAmount(i, j).then((amount) => {
+          console.log('betting amount: ', amount)
+          const new_poolAmount = [...poolAmount]
+          new_poolAmount[i][j] = window.web3.utils.fromWei(amount, 'ether')
+          setPoolAmount(new_poolAmount)
+        })
+      }
+    }
+  }
 
   useEffect(() => {
     if (gameState === 1) {
       bet_events().then((event) => {
         console.log('bet_event: ', event)
         setBetEvent(event)
+        initBetAmount()
       })
       getLuckyNumbers().then((numbers) => {
         console.log('set-luckyNumbers: ', numbers)
@@ -78,11 +101,13 @@ function App() {
   }, [gameState])
 
   console.log('luckyNumbers-now: ', luckyNumbers)
+  console.log('pool-now: ', poolAmount)
 
   return (
     <div className={container}>
       <Header setWalletInfo={setWalletInfo} walletInfo={walletInfo} />
       <Lottery
+        poolAmount={poolAmount}
         gameState={gameState}
         setGameState={setGameState}
         luckyNumbers={luckyNumbers}

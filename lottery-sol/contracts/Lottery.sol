@@ -40,7 +40,7 @@ contract Lottery {
 
     event GAME_STARTED(uint[3] luckyNumbers);
     event GAME_ENDED(uint[6] finalNumbers);
-    event BET(uint256 index, address bettor, uint256 amount, uint number, bool guess, uint256 totalBetAmount);
+    event BET(uint256 index, address bettor, uint256 amount, uint number, bool guess);
 
 
     constructor() {
@@ -110,10 +110,7 @@ contract Lottery {
 
     require(pushBet(number, guess), "pushBet failed!!");
 
-    uint betAmount = games[_games_tail].bettingAmount[number][guess];
-    emit BET(_bets_tail - 1, msg.sender, msg.value, number, guess, betAmount);
-    //배당률 계산 
-    // currentOdds = calculateOdds(msg.value, betAmount);
+    emit BET(_bets_tail - 1, msg.sender, msg.value, number, guess);
 
     return true;
     }
@@ -131,5 +128,9 @@ contract Lottery {
         _bets_tail++;
 
         return true;
+    }
+
+    function getBettingAmount(uint number, bool status) public view returns (uint) {
+        return games[_games_tail].bettingAmount[number][status];
     }
 }

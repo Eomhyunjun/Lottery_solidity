@@ -53,6 +53,14 @@ export async function getGameState() {
   }
 }
 
+export async function getBettingAmount(number, guess) {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    const started = await lottery_con.methods
+      .getBettingAmount(number, guess)
+      .call()
+    return started
+  }
+}
 // 컨트랙트 메서드 불러오기
 export async function startGame() {
   if (local_web3 && local_web3.eth && local_web3.eth.accounts) {
