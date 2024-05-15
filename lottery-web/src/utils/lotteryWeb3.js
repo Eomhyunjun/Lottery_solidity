@@ -53,48 +53,12 @@ export async function getGameState() {
   }
 }
 
-export async function getLuckyNumbers() {
-  if (window.web3 && window.web3.eth && window.ethereum) {
-    try {
-      // luckyNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
-      const event_val = await lottery_con.getPastEvents('GAME_STARTED', {
-        fromBlock: 0,
-        toBlock: 'latest',
-      })
-      const numbers = event_val.returnValues.luckyNumbers
-      console.log('lucky: ', numbers)
-      return numbers
-    } catch (error) {
-      console.error('Error fetching lucky numbers:', error)
-    }
-  }
-}
-
-export async function getFinalNumbers() {
-  if (window.web3 && window.web3.eth && window.ethereum) {
-    try {
-      // finalNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
-      const event_val = await lottery_con.getPastEvents('GAME_ENDED', {
-        fromBlock: 0,
-        toBlock: 'latest',
-      })
-      const numbers = event_val.returnValues.finalNumbers
-      console.log('final: ', numbers)
-      return numbers
-    } catch (error) {
-      console.error('Error fetching lucky numbers:', error)
-    }
-  }
-}
-
 // 컨트랙트 메서드 불러오기
 export async function startGame() {
   if (local_web3 && local_web3.eth && local_web3.eth.accounts) {
     const providersAccounts = await local_web3.eth.getAccounts()
 
     const defaultAccount = providersAccounts[0]
-
-    console.log(defaultAccount)
 
     try {
       const receipt = await local_lottery_con.methods.startGame().send({
@@ -118,7 +82,7 @@ export async function bet(number, guess) {
       .send({
         from: accounts[0],
         to: contract_addr,
-        value: window.web3.utils.toWei('5000000000000000', 'wei'),
+        value: window.web3.utils.toWei('1', 'ether'),
         gas: 300000,
         gasPrice: window.web3.utils.toWei('5', 'gwei'),
       })
@@ -142,6 +106,41 @@ export async function startGame_events() {
     // return <div>{event}</div>
   }
   // return <></>
+}
+
+export async function getLuckyNumbers() {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    try {
+      // luckyNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
+      const event_val = await lottery_con.getPastEvents('GAME_STARTED', {
+        fromBlock: 0,
+        toBlock: 'latest',
+      })
+      console.log('lucky_event_val: ', event_val)
+      const numbers = event_val[0].returnValues.luckyNumbers
+      console.log('lucky: ', numbers)
+      return numbers
+    } catch (error) {
+      console.error('Error fetching lucky numbers:', error)
+    }
+  }
+}
+
+export async function getFinalNumbers() {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    try {
+      // finalNumbers 배열의 크기가 3이므로, 0부터 2까지 반복
+      const event_val = await lottery_con.getPastEvents('GAME_ENDED', {
+        fromBlock: 0,
+        toBlock: 'latest',
+      })
+      const numbers = event_val[0].returnValues.finalNumbers
+      console.log('final: ', numbers)
+      return numbers
+    } catch (error) {
+      console.error('Error fetching lucky numbers:', error)
+    }
+  }
 }
 
 export async function bet_events(number, guess) {

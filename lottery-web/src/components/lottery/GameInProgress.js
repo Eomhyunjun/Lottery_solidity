@@ -2,6 +2,7 @@ import { css } from '@emotion/css'
 import { bet } from '../../utils/lotteryWeb3'
 
 const GameInProgress = ({ luckyNumbers }) => {
+  console.log('luckyNumbers: ', luckyNumbers)
   return (
     <div>
       {luckyNumbers.length > 0 &&
