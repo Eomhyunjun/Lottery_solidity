@@ -42,7 +42,7 @@ export function ConnectWallet() {
         <Card className="w-full max-w-md p-2 pb-0 bg-white rounded-lg shadow-lg dark:bg-gray-800">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>지갑 연결</CardTitle>
+              <CardTitle>지갑 연결하고 시작하기</CardTitle>
               <WalletIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
             </div>
             <CardDescription>
