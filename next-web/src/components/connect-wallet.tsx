@@ -28,13 +28,37 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@radix-ui/react-separator";
-import { Badge } from "./ui/badge";
-// import { Separator } from "@/components/ui/separator"
+import { getWalletInfo, initUserMetaWallet } from "@/utils/lotteryWeb3";
+import { abbreviateString } from "@/utils/uttils";
+import { T_WalletData } from "@/types/wallet";
 
 export function ConnectWallet() {
   const [isConnected, setIsConnected] = useState(false);
+  const [walletData, setWalletData] = useState<T_WalletData | null>();
+
+  useEffect(() => {
+    initUserMetaWallet();
+  }, []);
+
+  async function connectWallet() {
+    const walletData: T_WalletData | null = await getWalletInfo();
+
+    if (walletData) {
+      console.log(walletData);
+      setWalletData({
+        account: walletData.account,
+        balance: window.web3.utils.fromWei(walletData.balance, "ether"),
+      });
+      setIsConnected(true);
+    }
+  }
+
+  function disconnectWallet() {
+    setIsConnected(false);
+    setWalletData(null);
+  }
 
   return (
     <>
@@ -51,7 +75,11 @@ export function ConnectWallet() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center space-y-4">
-              <Button className="w-full" variant="primary">
+              <Button
+                className="w-full"
+                variant="ghost"
+                onClick={() => connectWallet()}
+              >
                 <WalletIcon className="w-5 h-5 mr-2" />
                 Connect Wallet
               </Button>
@@ -72,17 +100,22 @@ export function ConnectWallet() {
                 </Avatar>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium" />
-                  <p className="text-sm text-gray-500">...</p>
+                  <p
+                    className="text-sm text-gray-500"
+                    aria-label={walletData?.account}
+                  >
+                    {walletData && abbreviateString(walletData.account)}
+                  </p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">Balance</p>
-                <p className="text-lg font-medium"> ETH</p>
+                <p className="text-lg font-medium">{walletData?.balance} ETH</p>
               </div>
             </div>
             <Separator />
             <div className="flex justify-end mt-4">
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onClick={disconnectWallet}>
                 Disconnect
               </Button>
             </div>
@@ -93,7 +126,7 @@ export function ConnectWallet() {
   );
 }
 
-function WalletIcon(props) {
+function WalletIcon(props: any) {
   return (
     <svg
       {...props}
