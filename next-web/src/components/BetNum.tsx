@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { NumberCard } from "./number-card";
 import { StatusBar } from "./status-bar";
 import { GameState } from "@/types/games";
+import WinningNum from "./WinningNum";
 
 /**
  * 베팅 관련 View
@@ -25,24 +26,54 @@ interface BetNumProps {
   state: GameState;
   luckNumbers: number[];
   time: number;
+  answer: boolean[];
+  finalNumbers: number[];
 }
 
-export default function BetNum({ state, luckNumbers, time }: BetNumProps) {
+export default function BetNum({
+  state,
+  luckNumbers,
+  time,
+  answer,
+  finalNumbers,
+}: BetNumProps) {
+  console.log("f", state, luckNumbers, answer, finalNumbers);
   const tmp_luckNumbers = useMemo(
     () => (luckNumbers?.length === 3 ? luckNumbers : [0, 0, 0]),
     [luckNumbers]
   );
+
+  const tmp_finalNumbers = useMemo(() => finalNumbers, [finalNumbers]);
+
   return (
     <div className="space-y-4 ">
       <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50">
         Your Bet
       </h2>
       <div className="grid grid-cols-3 gap-4">
-        {tmp_luckNumbers.map((num, i) => (
-          <NumberCard key={i} num={Number(num)} index={i} />
-        ))}
+        {answer &&
+          answer.length > 0 &&
+          tmp_luckNumbers.map((num, i) => (
+            <NumberCard
+              key={i}
+              num={Number(num)}
+              index={i}
+              answer={answer[i]}
+              state={state}
+            />
+          ))}
       </div>
       <div>
+        {state === "게임 종료" &&
+          tmp_finalNumbers?.length > 0 &&
+          tmp_finalNumbers[0] !== 0 && (
+            <div className="my-[40px]">
+              <WinningNum
+                finalNumbers={tmp_finalNumbers}
+                luckNumbers={luckNumbers}
+              />
+            </div>
+          )}
         <StatusBar title="게임 상태" status={state} now_time={time} />
       </div>
     </div>

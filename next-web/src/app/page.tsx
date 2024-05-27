@@ -17,27 +17,29 @@ export default function Main() {
   const [init, setInit] = useState<boolean>(false);
   const [state, setState] = useState<GameState>("불러오는 중");
   const [time, setTime] = useState<number>(0);
-  const [luckNumbers, setLuckyNumbers] = useState<number[]>([0, 0, 0]);
-  const [finalNumbers, setFinalNumbers] = useState<number[]>([
+  const [luckNumbers, setLuckyNumbers] = useState<number[] | undefined>([
+    0, 0, 0,
+  ]);
+  const [answer, setAnswer] = useState<boolean[]>([false, false, false]);
+  const [finalNumbers, setFinalNumbers] = useState<number[] | undefined>([
     0, 0, 0, 0, 0, 0,
   ]);
   const [topFive, setTopFive] = useState<number[]>([0, 0, 0, 0, 0, 0]);
-  const [answer, setAnswer] = useState<number[]>([]);
 
   async function fetchGameState() {
     try {
-      const { gameStat, luckyNumbers, fianlNumbers, isSuccess } =
+      const { gameStat, IntLuckyNumbers, IntFinalNumbers, isSuccess } =
         await initGame();
       console.log(
         "fetchGameState",
         gameStat,
-        luckyNumbers,
-        fianlNumbers,
+        IntLuckyNumbers,
+        IntFinalNumbers,
         isSuccess
       );
       if (isSuccess) {
-        setLuckyNumbers(luckyNumbers);
-        setFinalNumbers(fianlNumbers);
+        setLuckyNumbers(IntLuckyNumbers);
+        setFinalNumbers(IntFinalNumbers);
         setState(gameStat ? "게임 시작" : "게임 종료");
       } else {
         setState("불러오는 중");
@@ -59,19 +61,20 @@ export default function Main() {
     if (!init) return;
     if (state === "게임 시작") {
       console.log("startGame_rootin 시작!");
-      startGame_rootin().then(({ luckyNumbers }: any) => {
-        console.log("startGame_rootin", luckyNumbers);
-        setLuckyNumbers(luckyNumbers);
+      startGame_rootin().then(({ IntLuckyNumbers }: any) => {
+        console.log("startGame_rootin", IntLuckyNumbers);
+        setLuckyNumbers(IntLuckyNumbers);
         let tmp_time: number = 0;
         const interval = setInterval(() => {
           tmp_time = tmp_time + 1;
           setTime(tmp_time);
-          console.log(tmp_time);
           if (tmp_time > GAME_IN_PROGRES) {
-            clearInterval(interval);
             setTime(0);
-            setLuckyNumbers([0, 0, 0]);
-            setState("게임 종료");
+
+            endGame().then(() => {
+              setState("게임 종료");
+              clearInterval(interval);
+            });
           }
         }, 1000);
 
@@ -79,38 +82,45 @@ export default function Main() {
       });
     } else if (state === "게임 종료") {
       console.log("endGame_rootin 시작!");
-      endGame_rootin().then(({ finalNumbers, answer, topFive }) => {
-        setFinalNumbers(finalNumbers);
+      endGame_rootin().then(({ IntFinalNumbers, answer }) => {
+        setFinalNumbers(IntFinalNumbers);
         setAnswer(answer);
-        setTopFive(topFive);
+        // setTopFive(topFive);
 
         let tmp_time: number = 0;
         const interval = setInterval(() => {
           tmp_time = tmp_time + 1;
           setTime(tmp_time);
-          console.log(tmp_time, time, GAME_ENDED);
           if (tmp_time > GAME_ENDED) {
             console.log("---- 게임 시작합니데이 ----");
-            clearInterval(interval);
             setTime(0);
-            setState("게임 시작");
-            startGame();
+            startGame().then(() => {
+              setState("게임 시작");
+              clearInterval(interval);
+            });
           }
         }, 1000);
+
         return () => clearInterval(interval);
       });
     } else {
       fetchGameState();
     }
-  }, [state]);
+  }, [init, state]);
 
   return (
     <div className="flex justify-center bg-gray-100 dark:bg-gray-950">
       <div className="relative flex flex-row min-h-screen gap-10 p-4 overflow-x-scroll">
         <div className="min-w-[700px] max-w-4xl p-8 space-y-8 bg-white rounded-lg shadow-lg dark:bg-gray-900">
           <Head />
-          <BetNum state={state} luckNumbers={luckNumbers} time={time} />
-          <WinningNum finalNumbers={finalNumbers} />
+          <BetNum
+            state={state}
+            luckNumbers={luckNumbers}
+            time={time}
+            answer={answer}
+            finalNumbers={finalNumbers}
+          />
+
           <LearderBoard />
         </div>
       </div>

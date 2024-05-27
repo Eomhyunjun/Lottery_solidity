@@ -24,13 +24,13 @@ export function ConnectWallet() {
   }, []);
 
   async function connectWallet() {
-    const walletData: T_WalletData | null = await getWalletInfo();
+    const tmp_walletData: any = await getWalletInfo();
 
-    if (walletData) {
-      console.log(walletData);
+    if (tmp_walletData) {
+      console.log("cconn", tmp_walletData);
       setWalletData({
-        account: walletData.account,
-        balance: window.web3.utils.fromWei(walletData.balance, "ether"),
+        account: tmp_walletData.account,
+        balance: window.web3.utils.fromWei(tmp_walletData.balance, "ether"),
       });
       setIsConnected(true);
     }

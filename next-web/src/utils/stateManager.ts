@@ -13,11 +13,18 @@ import {
 export async function initGame() {
   const isSuccess = await initUserMetaWallet();
   const isSuccessLocal = await initLocalWallet();
+
   if (isSuccess && isSuccessLocal) {
     const gameStat = await getGameState();
-    const luckyNumbers: number[] = gameStat ? await getLuckyNumbers() : [];
-    const fianlNumbers: number[] = !gameStat ? await getFinalNumbers() : [];
-    return { gameStat, luckyNumbers, fianlNumbers, isSuccess };
+    const luckyNumbers: BigInt[] = gameStat ? await getLuckyNumbers() : [];
+    const IntLuckyNumbers: number[] = luckyNumbers
+      ? luckyNumbers.map((num) => Number(num))
+      : [0, 0, 0];
+    const fianlNumbers: BigInt[] = !gameStat ? await getFinalNumbers() : [];
+    const IntFinalNumbers: number[] = fianlNumbers
+      ? fianlNumbers.map((num) => Number(num))
+      : [0, 0, 0, 0, 0, 0];
+    return { gameStat, IntLuckyNumbers, IntFinalNumbers, isSuccess };
   }
 
   return {
@@ -29,14 +36,20 @@ export async function initGame() {
 }
 
 export async function startGame_rootin() {
-  const luckyNumbers: number[] = await getLuckyNumbers();
-  return { luckyNumbers };
+  const luckyNumbers: BigInt[] = await getLuckyNumbers();
+  const IntLuckyNumbers: number[] = luckyNumbers
+    ? luckyNumbers.map((num) => Number(num))
+    : [0, 0, 0];
+  return { IntLuckyNumbers };
 }
 
 export async function endGame_rootin() {
-  const finalNumbers: number[] = await getFinalNumbers();
-  const answer = await gameAnswer_events();
+  const finalNumbers: BigInt[] = await getFinalNumbers();
+  const IntFinalNumbers: number[] = finalNumbers
+    ? finalNumbers.map((num) => Number(num))
+    : [0, 0, 0, 0, 0, 0];
+  const answer: boolean[] = await gameAnswer_events();
   const topFive = await getTopPayouts();
 
-  return { finalNumbers, answer, topFive };
+  return { IntFinalNumbers, answer };
 }

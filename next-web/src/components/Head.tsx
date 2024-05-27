@@ -15,26 +15,6 @@ export default function Head() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50">
             Lucky-Vicky Lottery Game
           </h1>
-          <div className="flex gap-[10px]">
-            <button
-              className="bg-red-400 w-[100px] h-[100px]"
-              onClick={initLocalWallet}
-            >
-              로컬 web3 연결
-            </button>
-            <button
-              className="bg-red-400 w-[100px] h-[100px]"
-              onClick={getLocalWalletInfo}
-            >
-              로컬 지갑 연결된 확인
-            </button>
-            <button
-              className=" bg-red-400 w-[100px] h-[100px]"
-              onClick={startGame}
-            >
-              게임 시작
-            </button>
-          </div>
           <div className="w-[200px] m-auto mt-10">
             {/* 사진 출처: https://www.youtube.com/shorts/lNSY-lrHQ10 */}
             <Image src="/lucky.png" width={200} height={200} alt="lucky" />

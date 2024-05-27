@@ -2,19 +2,19 @@ import { useState, useEffect } from "react";
 import { Button } from "@/utils/ui/button";
 import { bet } from "@/utils/lotteryWeb3";
 
-export function NumberCard({
-  num,
-  index,
-}: {
+interface NumberCardProps {
   num: number | null;
   index: number;
-}) {
+  answer: boolean;
+  state: string;
+}
+
+export function NumberCard({ num, index, answer, state }: NumberCardProps) {
   const [flipped, setFlipped] = useState(true);
 
   useEffect(() => {
-    console.log(num, "flipped");
-    setFlipped(!num);
-  }, [num]);
+    setFlipped(state === "게임 종료" ? true : false);
+  }, [state]);
 
   return (
     <div className="perspective-1000 w-[268px] h-[268px] max-w-md p-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
@@ -65,7 +65,10 @@ export function NumberCard({
         <div className="card-face absolute w-full h-full backface-hidden rotate-y-180">
           <div className="flex flex-col items-center justify-center h-full">
             <div className="font-bold text-gray-900 text-3xl dark:text-gray-50">
-              게임 종료
+              {num}
+            </div>
+            <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              {String(answer)}
             </div>
           </div>
         </div>
