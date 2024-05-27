@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { NumberCard } from "./number-card";
 import { StatusBar } from "./status-bar";
 import { GameState } from "@/types/games";
@@ -28,19 +28,22 @@ interface BetNumProps {
 }
 
 export default function BetNum({ state, luckNumbers, time }: BetNumProps) {
-  console.log(luckNumbers, "luckNumbers");
+  const tmp_luckNumbers = useMemo(
+    () => (luckNumbers?.length === 3 ? luckNumbers : [0, 0, 0]),
+    [luckNumbers]
+  );
   return (
     <div className="space-y-4 ">
       <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50">
         Your Bet
       </h2>
       <div className="grid grid-cols-3 gap-4">
-        {luckNumbers.map((num, i) => (
+        {tmp_luckNumbers.map((num, i) => (
           <NumberCard key={i} num={Number(num)} index={i} />
         ))}
       </div>
       <div>
-        <StatusBar title="게임 상태" status={state} percentage={time} />
+        <StatusBar title="게임 상태" status={state} now_time={time} />
       </div>
     </div>
   );

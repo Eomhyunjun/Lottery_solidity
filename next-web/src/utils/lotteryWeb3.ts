@@ -1,5 +1,5 @@
 import { Web3 } from "web3";
-import { lottery_abi, contract_addr, owner_addr } from "./contract_val";
+import { lottery_abi, contract_addr, owner_addr } from "./val/contract_val";
 
 // 브라우저에서 사용할 수 있는 web3 객체 생성
 let lottery_con: any;
@@ -10,24 +10,28 @@ export async function initUserMetaWallet() {
     window.web3 = web3;
     lottery_con = new window.web3.eth.Contract(lottery_abi, contract_addr);
     window.lottery_con = lottery_con;
+    return 1;
   } else {
     console.log("window.ethereum is not defined");
+    return 0;
   }
 }
-
-// 로컬 테스트를 위한 web3 객체 생성
-let local_lottery_con: any;
 
 export async function initLocalWallet() {
   if (window.ethereum) {
     const rpcURL = "http://localhost:8545";
     const local_web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
     window.local_web3 = local_web3;
-    local_lottery_con = new local_web3.eth.Contract(lottery_abi, contract_addr);
+    const local_lottery_con = new local_web3.eth.Contract(
+      lottery_abi,
+      contract_addr
+    );
     window.local_lottery_con = local_lottery_con;
     local_lottery_con.handleRevert = true;
+    return 1;
   } else {
     console.log("로컬 테스트를 위한 web3 객체 생성 실패");
+    return 0;
   }
 }
 
@@ -61,6 +65,18 @@ export async function getWalletInfo() {
     };
   } else {
     alert("Please download metamask");
+  }
+}
+
+export async function getTopPayouts() {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    try {
+      const payouts = await lottery_con.methods.getTopPayouts().call();
+      console.log("payouts: ", payouts);
+      return payouts;
+    } catch (error) {
+      console.error("Error fetching payouts:", error);
+    }
   }
 }
 
@@ -165,6 +181,18 @@ export async function bet_events(number, guess) {
   return [];
 }
 
+export async function gameAnswer_events() {
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    const event = await lottery_con.getPastEvents("GAME_ANSWER", {
+      fromBlock: 0,
+      toBlock: "latest",
+    });
+
+    return event;
+  }
+  return [];
+}
+
 /** 로컬 전용 함수
  * startGame - 게임 시작 함수
  * endGame - 게임 종료 함수
@@ -188,15 +216,17 @@ export async function startGame() {
     const defaultAccount = providersAccounts[0];
 
     try {
-      const receipt = await local_lottery_con.methods.startGame().send({
+      const receipt = await window.local_lottery_con.methods.startGame().send({
         from: defaultAccount,
         gas: 1000000,
         gasPrice: "10000000000",
       });
       console.log("Transaction Hash: " + receipt.transactionHash);
+      return 1;
     } catch (error) {
       console.error(error);
     }
+    return 0;
   }
 }
 
@@ -212,14 +242,16 @@ export async function endGame() {
     }
 
     try {
-      const receipt = await local_lottery_con.methods.endGame().send({
+      const receipt = await window.local_lottery_con.methods.endGame().send({
         from: defaultAccount,
         gas: 1000000,
         gasPrice: "10000000000",
       });
       console.log("Transaction Hash: " + receipt.transactionHash);
+      return 1;
     } catch (error) {
       console.error(error);
+      return 0;
     }
   }
 }

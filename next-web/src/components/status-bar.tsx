@@ -7,7 +7,7 @@
 import { useMemo } from "react";
 import MyBettinglist from "./my-list";
 import { GameState } from "@/types/games";
-import { GAME_ENDED, GAME_IN_PROGRES } from "@/utils/time_val";
+import { GAME_ENDED, GAME_IN_PROGRES } from "@/utils/val/time_val";
 
 /** Add fonts into your Next.js project:
 
@@ -26,10 +26,10 @@ To read more about using these font, please visit the Next.js documentation:
 type StatusBarProps = {
   title: string;
   status: GameState;
-  percentage: number;
+  now_time: number;
 };
 
-export function StatusBar({ title, status, percentage }: StatusBarProps) {
+export function StatusBar({ title, status, now_time }: StatusBarProps) {
   const statusTime = useMemo(() => {
     return status === "게임 시작" ? GAME_IN_PROGRES : GAME_ENDED;
   }, [status]);
@@ -54,6 +54,10 @@ export function StatusBar({ title, status, percentage }: StatusBarProps) {
     }
   }, [status]);
 
+  const ment = useMemo(() => {
+    return status === "게임 시작" ? "게임이 종료됩니다." : "게임이 시작됩니다.";
+  }, [status]);
+
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md dark:bg-gray-950">
       <div className="flex items-center justify-between">
@@ -70,12 +74,13 @@ export function StatusBar({ title, status, percentage }: StatusBarProps) {
         <div
           className={"h-2 " + barColor + " rounded-full"}
           style={{
-            width: `calc((${percentage}/${statusTime}) * 100)%`,
+            width: `calc((${now_time} / ${statusTime}) * 100%)`,
+            transition: "ease 1s",
           }}
         />
       </div>
       <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-        {statusTime - percentage}초 후에 게임이 종료 됩니다.
+        {statusTime - now_time}초 후에 {ment}
       </div>
       <MyBettinglist />
     </div>
