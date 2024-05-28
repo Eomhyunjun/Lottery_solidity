@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/utils/ui/button";
 import { bet, getBettingAmount, getOddsRate } from "@/utils/lotteryWeb3";
+import Web3 from "web3";
 
 interface NumberCardProps {
   num: number | null;
@@ -15,11 +16,18 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
     true: number;
     false: number;
   }>({ true: 0, false: 0 });
-  const [betAmount, setBetAmount] = useState<{ true: number; false: number }>({
+  const [betAmount, setBetAmount] = useState<{ true: bigint; false: bigint }>({
     true: 0,
     false: 0,
   });
+  const [web3_for_util, setWeb3ForUtil] = useState<Web3>(null);
   console.log("numbercard");
+
+  useEffect(() => {
+    if (window.web3 && window.web3.eth && window.ethereum) {
+      setWeb3ForUtil(new Web3(window.web3.currentProvider));
+    }
+  }, []);
 
   useEffect(() => {
     if (state === "게임 진행 중") {
@@ -56,14 +64,12 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
   }
 
   async function getBetAmount() {
-    const scale: bigint = BigInt(100);
-
     const betAmount_true: bigint = await getBettingAmount(index, true);
     const betAmount_false: bigint = await getBettingAmount(index, false);
 
     setBetAmount({
-      true: Number(betAmount_true * scale),
-      false: Number(betAmount_false * scale),
+      true: betAmount_true,
+      false: betAmount_false,
     });
   }
 
@@ -94,9 +100,14 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   찬성
                 </Button>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  베팅액: {betAmount.true / 100} ETH
+                  베팅액:
+                  {web3_for_util &&
+                    web3_for_util.utils
+                      .fromWei(betAmount.true.toString(), "ether")
+                      .split(".")[0]}{" "}
+                  ETH
                   <br />
-                  배당율: {bettingRate.true / 100}배
+                  배당율: {bettingRate.true / 100} 배
                 </div>
               </div>
               <div className="flex flex-col items-center">
@@ -109,9 +120,14 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   반대
                 </Button>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  베팅액: {betAmount.false / 100} ETH
+                  베팅액:
+                  {web3_for_util &&
+                    web3_for_util.utils
+                      .fromWei(betAmount.false.toString(), "ether")
+                      .split(".")[0]}{" "}
+                  ETH
                   <br />
-                  배당율: {bettingRate.false / 100}배
+                  배당율: {bettingRate.false / 100} 배
                 </div>
               </div>
             </div>
