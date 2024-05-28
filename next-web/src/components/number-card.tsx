@@ -100,7 +100,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   찬성
                 </Button>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  베팅액:
+                  베팅액:{" "}
                   {web3_for_util &&
                     web3_for_util.utils
                       .fromWei(betAmount.true.toString(), "ether")
@@ -120,7 +120,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   반대
                 </Button>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  베팅액:
+                  베팅액:{" "}
                   {web3_for_util &&
                     web3_for_util.utils
                       .fromWei(betAmount.false.toString(), "ether")

@@ -15,7 +15,7 @@ Compiling your contracts...
 Starting migrations...
 ======================
 > Network name:    'development'
-> Network id:      1716902151563
+> Network id:      1716903632542
 > Block gas limit: 30000000 (0x1c9c380)
 
 
@@ -28,7 +28,7 @@ Starting migrations...
    > Blocks: 0            Seconds: 0
    > contract address:    0xC8cbDe94d91791d7Fd2282c04C021271449eFc4D
    > block number:        1
-   > block timestamp:     1716902165
+   > block timestamp:     1716903638
    > account:             0xF76c9B7012c0A3870801eaAddB93B6352c8893DB
    > balance:             999.989821894375
    > gas used:            3015735 (0x2e0437)
