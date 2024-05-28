@@ -61,6 +61,7 @@ export default function Main() {
 
   useEffect(() => {
     if (!init) return;
+    if (state === "게임 진행 중") return;
     if (state === "게임 시작") {
       console.log("startGame_rootin 시작!");
       startGame_rootin().then(({ IntLuckyNumbers }: any) => {
