@@ -66,6 +66,7 @@ export default function Main() {
       startGame_rootin().then(({ IntLuckyNumbers }: any) => {
         console.log("startGame_rootin", IntLuckyNumbers);
         setLuckyNumbers(IntLuckyNumbers);
+        setState("게임 진행 중");
       });
     } else if (state === "게임 종료") {
       console.log("endGame_rootin 시작!");

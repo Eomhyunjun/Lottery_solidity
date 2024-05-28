@@ -23,11 +23,12 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
 
   useEffect(() => {
     if (!num) return;
+    if (state !== "게임 진행 중") return;
 
     getRate(num);
 
     return () => {};
-  }, [num]);
+  }, [num, state]);
 
   async function getRate(num: number) {
     const rate_true: BigInt = await getOddsRate(index, true);

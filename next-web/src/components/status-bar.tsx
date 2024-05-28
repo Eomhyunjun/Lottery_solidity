@@ -15,7 +15,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (status === "게임 시작") {
+    if (status === "게임 진행 중") {
       interval = setInterval(() => {
         setTime((prevTime) => {
           let newTime = prevTime + 1;
@@ -53,13 +53,13 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   }, [status]);
 
   const statusTime = useMemo(() => {
-    return status === "게임 시작" ? GAME_IN_PROGRES : GAME_ENDED;
+    return status === "게임 진행 중" ? GAME_IN_PROGRES : GAME_ENDED;
   }, [status]);
 
   const statusColor = useMemo(() => {
     if (status === "게임 종료") {
       return "text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300";
-    } else if (status === "게임 시작") {
+    } else if (status === "게임 진행 중") {
       return "text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300";
     }
 
@@ -69,7 +69,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   const barColor = useMemo(() => {
     if (status === "게임 종료") {
       return " bg-red-500 ";
-    } else if (status === "게임 시작") {
+    } else if (status === "게임 진행 중") {
       return " bg-green-500 ";
     } else {
       return " bg-yellow-500 ";
@@ -77,7 +77,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   }, [status]);
 
   const ment = useMemo(() => {
-    if (status === "게임 시작") {
+    if (status === "게임 진행 중") {
       return "게임이 종료됩니다.";
     } else if (status === "게임 종료") {
       return "게임이 시작됩니다.";
