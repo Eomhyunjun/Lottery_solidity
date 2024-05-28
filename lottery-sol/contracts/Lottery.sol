@@ -47,7 +47,7 @@ contract Lottery {
     PayoutInfo[5] public topPayouts; // 상위 5명 상금 정보 저장
 
     mapping (uint256 => Game) private games; // 게임 데이터 매핑
-    uint256 private _games_tail = 0; // 게임 인덱스
+    uint256 public _games_tail = 0; // 게임 인덱스
 
     event GAME_STARTED(uint[3] luckyNumbers); // 게임 시작 이벤트
     event GAME_ENDED(uint[6] finalNumbers); // 게임 종료 이벤트

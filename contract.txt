@@ -27,25 +27,25 @@ Starting migrations...
 
    Replacing 'Lottery'
    -------------------
-   > transaction hash:    0x3f1d8c56810ba5d4f38e2134554056611d43cbf3218f3d419b1ec494e8daa00c
+   > transaction hash:    0x2f1cc804b4814c50d5beaf3bb1693a78ccf5ccd988a7f2c4417a22e83479a23b
    > Blocks: 0            Seconds: 0
-   > contract address:    0x60365062A1cAfc23DD5dC9D16b3fC5ac7A82292d
-   > block number:        102
-   > block timestamp:     1716893561
+   > contract address:    0xe369403f0D4Ffa0Dfb13722d6CaFF5Cc7B69F8F3
+   > block number:        117
+   > block timestamp:     1716895899
    > account:             0xF76c9B7012c0A3870801eaAddB93B6352c8893DB
-   > balance:             950.626320870524618262
-   > gas used:            3002974 (0x2dd25e)
-   > gas price:           2.500001646 gwei
+   > balance:             950.892141842017043173
+   > gas used:            3015735 (0x2e0437)
+   > gas price:           2.500000239 gwei
    > value sent:          0 ETH
-   > total cost:          0.007507439942895204 ETH
+   > total cost:          0.007539338220760665 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:     0.007507439942895204 ETH
+   > Total cost:     0.007539338220760665 ETH
 
 Summary
 =======
 > Total deployments:   1
-> Final cost:          0.007507439942895204 ETH
+> Final cost:          0.007539338220760665 ETH
 
 
