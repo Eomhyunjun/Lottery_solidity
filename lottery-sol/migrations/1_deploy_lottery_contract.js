@@ -1,8 +1,5 @@
-var RandomNumberGenerator = artifacts.require("RandomNumberGenerator");
 var Lottery = artifacts.require("Lottery");
 
-module.exports = function(deployer) {
-  // deployment steps
-  // deployer.deploy(RandomNumberGenerator);
+module.exports = function (deployer) {
   deployer.deploy(Lottery);
 };
