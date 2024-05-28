@@ -13,12 +13,14 @@ export default function WinningNum({
     makeColorBall();
 
     function makeColorBall() {
+      if (!finalNumbers && !luckNumbers) return;
+
       const tmp = finalNumbers.map((num, i) => {
         return { num: Number(num), isAnswer: luckNumbers.includes(num) };
       });
       setColorBalls(tmp);
     }
-  }, [finalNumbers]);
+  }, [finalNumbers, luckNumbers]);
 
   return (
     <div className="space-y-4">

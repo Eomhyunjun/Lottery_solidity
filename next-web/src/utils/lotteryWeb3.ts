@@ -1,26 +1,44 @@
 import Web3 from "web3";
-import { lottery_abi, contract_addr, owner_addr } from "./val/contract_val";
+import {
+  lottery_abi,
+  contract_addr,
+  owner_addr,
+  owner_priv,
+} from "./val/contract_val";
 
 // 브라우저에서 사용할 수 있는 web3 객체 생성
+let web3;
 let lottery_con: any;
 export async function initUserMetaWallet(): Promise<number> {
   if (window.ethereum) {
-    const web3 = new Web3(window.ethereum);
+    web3 = new Web3(window.ethereum);
     window.web3 = web3;
     lottery_con = new web3.eth.Contract(lottery_abi, contract_addr);
     window.lottery_con = lottery_con;
     return 1;
+  } else if (window.web3) {
+    web3 = new Web3(window.web3.currentProvider);
   } else {
     console.log("window.ethereum is not defined");
     return 0;
   }
+
+  return 1;
 }
 
+let owner: any;
+let local_web3: any;
 let local_lottery_con: any;
 export async function initLocalWallet(): Promise<number> {
   if (window.ethereum) {
     const rpcURL = "http://localhost:8545";
-    const local_web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
+    local_web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
+
+    owner = local_web3.eth.accounts.privateKeyToAccount(owner_priv);
+    console.log("owner :", owner);
+    local_web3.eth.accounts.wallet.add(owner);
+    local_web3.eth.defaultAccount = owner.address;
+
     window.local_web3 = local_web3;
     local_lottery_con = new local_web3.eth.Contract(lottery_abi, contract_addr);
     window.local_lottery_con = local_lottery_con;
@@ -34,11 +52,13 @@ export async function initLocalWallet(): Promise<number> {
 
 // 지갑 정보 불러오기
 export async function getWalletInfo() {
+  console.log("getWalletInfo...........");
   if (window.ethereum) {
     await window.ethereum.request({ method: "eth_requestAccounts" });
 
     const accounts: string[] = await window.web3.eth.getAccounts();
-    const balance: string = await window.web3.eth.getBalance(accounts[0]);
+    console.log(accounts);
+    const balance: BigInt = await window.web3.eth.getBalance(accounts[0]);
 
     return {
       account: accounts[0],
@@ -49,24 +69,14 @@ export async function getWalletInfo() {
   }
 }
 
-// 최고 지급액 가져오기
-export async function getTopPayouts() {
-  if (window.web3 && window.web3.eth && window.ethereum) {
-    try {
-      const payouts = await window.lottery_con.methods.getTopPayouts().call();
-      console.log("payouts: ", payouts);
-      return payouts;
-    } catch (error) {
-      console.error("Error fetching payouts:", error);
-    }
-  }
-}
-
 // 컨트랙트 변수 불러오기
 export async function getGameState() {
+  console.log("getGameState...........");
   if (window.web3 && window.web3.eth && window.ethereum) {
     try {
-      const started = await window.lottery_con.methods.gameStarted().call();
+      const started = await window.local_lottery_con.methods
+        .gameStarted()
+        .call();
       return started;
     } catch (error) {
       console.error("Error fetching game state:", error);
@@ -78,6 +88,7 @@ export async function getGameState() {
 
 // 베팅 금액 가져오기
 export async function getBettingAmount(number: number, guess: boolean) {
+  console.log("getBettingAmount...........");
   if (window.web3 && window.web3.eth && window.ethereum) {
     try {
       const amount = await window.lottery_con.methods
@@ -90,10 +101,40 @@ export async function getBettingAmount(number: number, guess: boolean) {
   }
 }
 
+// 최고 지급액 가져오기
+export async function getTopPayouts() {
+  console.log("getTopPayouts...........");
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    try {
+      const payouts = await window.lottery_con.methods.getTopPayouts().call();
+      console.log("payouts: ", payouts);
+      return payouts;
+    } catch (error) {
+      console.error("Error fetching payouts:", error);
+    }
+  }
+}
+
+// 배당률 가져오기
+export async function getOddsRate(number: number, guess: boolean) {
+  console.log("getDividendRate...........");
+  if (window.web3 && window.web3.eth && window.ethereum) {
+    try {
+      const rate = await window.lottery_con.methods
+        .calculateOdds(number, guess)
+        .call();
+      console.log("rate: ", rate);
+      return rate;
+    } catch (error) {
+      console.error("Error fetching dividend rate:", error);
+    }
+  }
+}
+
 // 베팅하기
 export async function bet(number: number, guess: boolean) {
+  console.log("betting...........");
   if (window.web3 && window.web3.eth && window.ethereum) {
-    console.log("betting...........");
     try {
       const accounts = await window.web3.eth.getAccounts();
       console.log("betting account: ", accounts[0]);
@@ -104,8 +145,8 @@ export async function bet(number: number, guess: boolean) {
         from: accounts[0],
         to: contract_addr,
         value: window.web3.utils.toWei("1", "ether"),
-        gas: 5000000,
-        gasPrice: window.web3.utils.toWei("15", "gwei"),
+        gas: 30000000,
+        gasPrice: window.web3.utils.toWei("10", "gwei"),
       });
       console.log("betting success...........", bet);
       return bet;
@@ -133,15 +174,20 @@ export async function startGame_events() {
 
 // 당첨 번호 가져오기
 export async function getLuckyNumbers() {
+  console.log("getLuckyNumbers...........");
   if (window.web3 && window.web3.eth && window.ethereum) {
     try {
-      const event_val = await window.lottery_con.getPastEvents("GAME_STARTED", {
-        fromBlock: 0,
-        toBlock: "latest",
-      });
-      const numbers = event_val.length
-        ? event_val[event_val.length - 1].returnValues.luckyNumbers
-        : [];
+      const event_val = await window.local_lottery_con.getPastEvents(
+        "GAME_STARTED",
+        {
+          fromBlock: 0,
+          toBlock: "latest",
+        }
+      );
+      const numbers =
+        event_val.length > 0
+          ? event_val[event_val.length - 1].returnValues.luckyNumbers
+          : [];
       console.log("lucky: ", numbers);
       return numbers;
     } catch (error) {
@@ -152,15 +198,20 @@ export async function getLuckyNumbers() {
 
 // 최종 번호 가져오기
 export async function getFinalNumbers() {
+  console.log("getFinalNumbers...........");
   if (window.web3 && window.web3.eth && window.ethereum) {
     try {
-      const event_val = await window.lottery_con.getPastEvents("GAME_ENDED", {
-        fromBlock: 0,
-        toBlock: "latest",
-      });
-      const numbers = event_val.length
-        ? event_val[event_val.length - 1].returnValues.finalNumbers
-        : [];
+      const event_val = await window.local_lottery_con.getPastEvents(
+        "GAME_ENDED",
+        {
+          fromBlock: 0,
+          toBlock: "latest",
+        }
+      );
+      const numbers =
+        event_val.length > 0
+          ? event_val[event_val.length - 1].returnValues.finalNumbers
+          : [];
       console.log("final: ", numbers);
       return numbers;
     } catch (error) {
@@ -169,17 +220,19 @@ export async function getFinalNumbers() {
   }
 }
 
-// 게임 답변 이벤트 가져오기
+// 게임 정답 이벤트 가져오기
 export async function gameAnswer_events() {
+  console.log("gameAnswer_events...........");
   if (window.web3 && window.web3.eth && window.ethereum) {
     try {
       const event_val = await window.lottery_con.getPastEvents("GAME_ANSWER", {
         fromBlock: 0,
         toBlock: "latest",
       });
-      const answer: boolean[] = event_val.length
-        ? event_val[event_val.length - 1].returnValues.winner
-        : [];
+      const answer: boolean[] =
+        event_val.length > 0
+          ? event_val[event_val.length - 1].returnValues.winner
+          : [];
       console.log("answer: ", answer);
       return answer;
     } catch (error) {
@@ -191,6 +244,7 @@ export async function gameAnswer_events() {
 
 // 로컬 지갑 정보 가져오기
 export async function getLocalWalletInfo() {
+  console.log("getLocalWalletInfo...........");
   if (window.local_web3) {
     try {
       const accounts = await window.local_web3.eth.getAccounts();
@@ -206,19 +260,29 @@ export async function getLocalWalletInfo() {
 
 // 게임 시작 (로컬)
 export async function startGame() {
+  console.log("startGame...........");
   if (window.local_web3) {
     try {
       const accounts = await window.local_web3.eth.getAccounts();
       const defaultAccount = accounts[0];
+
+      if (defaultAccount !== owner_addr) {
+        console.log("owner의 지갑이 아닙니다.");
+        return 0;
+      }
+
       const receipt = await window.local_lottery_con.methods.startGame().send({
         from: defaultAccount,
-        gas: 1000000,
-        gasPrice: "10000000000",
+        gas: 5000000,
+        gasPrice: local_web3.utils.toWei("10", "gwei"),
       });
-      console.log("Transaction Hash: " + receipt.transactionHash);
+      console.log("start game Transaction Hash: " + receipt.transactionHash);
       return 1;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error starting game:", error);
+      if (error.message.includes("revert")) {
+        console.error("Smart contract revert reason:", error.reason);
+      }
     }
   } else {
     console.log("window.local_web3 is not defined");
@@ -228,24 +292,35 @@ export async function startGame() {
 
 // 게임 종료 (로컬)
 export async function endGame() {
+  console.log("endGame...........");
   if (window.local_web3) {
     try {
       const accounts = await window.local_web3.eth.getAccounts();
       const defaultAccount = accounts[0];
+
       if (defaultAccount !== owner_addr) {
         console.log("owner의 지갑이 아닙니다.");
         return 0;
       }
-      console.log("owner의 지갑 확인");
+
+      // await window.local_lottery_con.methods.endGame().call({
+      //   from: defaultAccount,
+      // });
+
       const receipt = await window.local_lottery_con.methods.endGame().send({
         from: defaultAccount,
-        gas: 1000000,
-        gasPrice: "10000000000",
+        gas: 5000000,
+        gasPrice: local_web3.utils.toWei("10", "gwei"),
       });
-      console.log("Transaction Hash: " + receipt.transactionHash);
+
+      console.log("Endgame Transaction Hash: " + receipt.transactionHash);
+
       return 1;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error ending game:", error);
+      if (error.message.includes("revert")) {
+        console.error("Smart contract revert reason:", error.reason);
+      }
       return 0;
     }
   } else {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useCallback } from "react";
 import { NumberCard } from "./number-card";
 import { StatusBar } from "./status-bar";
 import { GameState } from "@/types/games";
@@ -29,41 +29,45 @@ interface BetNumProps {
   time: number;
   answer: boolean[];
   finalNumbers: number[];
+  setState: (state: GameState) => void;
 }
 
-export default function BetNum({
+const BetNum = React.memo(function BetNum({
   state,
   luckNumbers,
-  time,
   answer,
   finalNumbers,
+  setState,
 }: BetNumProps) {
-  // console.log("f", state, luckNumbers, answer, finalNumbers);
   const tmp_luckNumbers = useMemo(
     () => (luckNumbers?.length === 3 ? luckNumbers : [0, 0, 0]),
     [luckNumbers]
   );
 
+  console.log("BetNum: 리렌더링???");
   const tmp_finalNumbers = useMemo(() => finalNumbers, [finalNumbers]);
+  const renderNumberCards = useCallback(() => {
+    return (
+      answer &&
+      answer.length > 0 &&
+      tmp_luckNumbers.map((num, i) => (
+        <NumberCard
+          key={i}
+          num={Number(num)}
+          index={i}
+          answer={answer[i]}
+          state={state}
+        />
+      ))
+    );
+  }, [answer, tmp_luckNumbers, state]);
 
   return (
     <div className="space-y-4 ">
       <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50">
         Your Bet
       </h2>
-      <div className="grid grid-cols-3 gap-4">
-        {answer &&
-          answer.length > 0 &&
-          tmp_luckNumbers.map((num, i) => (
-            <NumberCard
-              key={i}
-              num={Number(num)}
-              index={i}
-              answer={answer[i]}
-              state={state}
-            />
-          ))}
-      </div>
+      <div className="grid grid-cols-3 gap-4">{renderNumberCards()}</div>
       <div>
         {state === "게임 종료" &&
           tmp_finalNumbers?.length > 0 &&
@@ -75,8 +79,10 @@ export default function BetNum({
               />
             </div>
           )}
-        <StatusBar title="게임 상태" status={state} now_time={time} />
+        <StatusBar title="게임 상태" status={state} setState={setState} />
       </div>
     </div>
   );
-}
+});
+
+export default BetNum;

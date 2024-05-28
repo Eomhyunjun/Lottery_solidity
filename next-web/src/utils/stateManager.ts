@@ -19,66 +19,87 @@ export interface T_IntTopPayout {
 }
 
 export async function initGame() {
-  const isSuccess = await initUserMetaWallet();
-  const isSuccessLocal = await initLocalWallet();
+  let IntLuckyNumbers: number[] = [0, 0, 0];
+  let IntFinalNumbers: number[] = [0, 0, 0, 0, 0, 0];
+  let IntGetTopFive: T_IntTopPayout[] = [];
 
-  let gameStat: boolean | undefined;
-  let luckyNumbers: BigInt[] | undefined;
-  let IntLuckyNumbers: number[] | undefined;
-  let finalNumbers: BigInt[] | undefined;
-  let IntFinalNumbers: number[] | undefined;
-  let topFive: T_TopPayout[] | undefined;
-  let IntGetTopFive: T_IntTopPayout[] | undefined;
+  let isSuccessAllProcess = false;
 
-  if (isSuccess && isSuccessLocal) {
-    gameStat = await getGameState();
+  const [
+    isMetaInitSuccess,
+    isSuccessLocal,
+    gameStat,
+    luckyNumbers,
+    finalNumbers,
+    topFive,
+  ] = await Promise.all([
+    initUserMetaWallet(),
+    initLocalWallet(),
+    getGameState(),
+    getLuckyNumbers(),
+    getFinalNumbers(),
+    getTopPayouts(),
+  ]);
 
-    if (gameStat) {
-      luckyNumbers = await getLuckyNumbers();
-      IntLuckyNumbers = luckyNumbers
-        ? luckyNumbers.map((num) => Number(num))
-        : [0, 0, 0];
-    } else {
-      finalNumbers = await getFinalNumbers();
-      IntFinalNumbers = finalNumbers
-        ? finalNumbers.map((num) => Number(num))
-        : [0, 0, 0, 0, 0, 0];
-    }
-    topFive = await getTopPayouts();
-    IntGetTopFive = topFive
-      ? topFive.map((bettorInfo: T_TopPayout): T_IntTopPayout => {
-          return {
-            bettor: bettorInfo.bettor,
-            payout: Number(bettorInfo.payout),
-          };
-        })
-      : [{ bettor: "", payout: 0 }];
-    console.log("getTopPayout: ", topFive);
+  if (isMetaInitSuccess && isSuccessLocal) {
+    IntLuckyNumbers = luckyNumbers.map((num: BigInt) => Number(num));
+    IntFinalNumbers = finalNumbers.map((num: BigInt) => Number(num));
+    IntGetTopFive = topFive.map((item: T_TopPayout) => {
+      return { bettor: item.bettor, payout: Number(item.payout) };
+    });
   }
+
+  if (IntLuckyNumbers[0] || IntFinalNumbers[0]) {
+    isSuccessAllProcess = true;
+  }
+
   return {
     gameStat,
     IntLuckyNumbers,
     IntFinalNumbers,
-    isSuccess,
+    isSuccessAllProcess,
     IntGetTopFive,
   };
 }
 
 export async function startGame_rootin() {
+  let gameStat: boolean = await getGameState();
+
+  while (gameStat !== true) {
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // 100ms 대기
+    gameStat = await getGameState();
+    console.log("게임 시작 블록 확정 대기중... ", gameStat);
+  }
+
   const luckyNumbers: BigInt[] = await getLuckyNumbers();
   const IntLuckyNumbers: number[] = luckyNumbers
     ? luckyNumbers.map((num) => Number(num))
     : [0, 0, 0];
+
   return { IntLuckyNumbers };
 }
 
 export async function endGame_rootin() {
-  const finalNumbers: BigInt[] = await getFinalNumbers();
-  const IntFinalNumbers: number[] = finalNumbers
-    ? finalNumbers.map((num) => Number(num))
-    : [0, 0, 0, 0, 0, 0];
-  const answer: boolean[] = await gameAnswer_events();
-  const topFive = await getTopPayouts();
+  let gameStat: boolean = await getGameState();
+
+  console.log("게임 종료 블록 확정 대기중... ", gameStat);
+  while (gameStat !== false) {
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // 100ms 대기
+    gameStat = await getGameState();
+    console.log("게임 종료 블록 확정 대기중... ", gameStat);
+  }
+
+  const [finalNumbers, answer, topFive] = await Promise.all([
+    getFinalNumbers(),
+    gameAnswer_events(),
+    getTopPayouts(),
+  ]);
+
+  const IntFinalNumbers: number[] = finalNumbers.map((num: BigInt) =>
+    Number(num)
+  );
+
+  console.log("endgame topFive: ", topFive);
 
   return { IntFinalNumbers, answer };
 }

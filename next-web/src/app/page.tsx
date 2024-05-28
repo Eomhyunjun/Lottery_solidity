@@ -16,7 +16,7 @@ import { endGame, startGame } from "@/utils/lotteryWeb3";
 export default function Main() {
   const [init, setInit] = useState<boolean>(false);
   const [state, setState] = useState<GameState>("불러오는 중");
-  const [time, setTime] = useState<number>(0);
+
   const [luckNumbers, setLuckyNumbers] = useState<number[] | undefined>([
     0, 0, 0,
   ]);
@@ -34,24 +34,24 @@ export default function Main() {
         gameStat,
         IntLuckyNumbers,
         IntFinalNumbers,
-        isSuccess,
+        isSuccessAllProcess,
         IntGetTopFive,
       } = await initGame();
-      console.log("fetchGameState", isSuccess);
-      if (isSuccess) {
+      console.log("fetchGameState", isSuccessAllProcess);
+      if (isSuccessAllProcess) {
         setLuckyNumbers(IntLuckyNumbers);
         setFinalNumbers(IntFinalNumbers);
         setTopFive(IntGetTopFive);
         setState(gameStat ? "게임 시작" : "게임 종료");
+        setInit(true);
       } else {
         setState("불러오는 중");
         console.log("불러오기 실패 재시도...");
+        setTimeout(fetchGameState, 5000);
       }
     } catch (error) {
       setState("불러오는 중");
       console.log("에러났쪄염ㅠ: ", error);
-    } finally {
-      setInit(true);
     }
   }, []);
 
@@ -66,21 +66,6 @@ export default function Main() {
       startGame_rootin().then(({ IntLuckyNumbers }: any) => {
         console.log("startGame_rootin", IntLuckyNumbers);
         setLuckyNumbers(IntLuckyNumbers);
-        let tmp_time: number = 0;
-
-        const interval = setInterval(() => {
-          tmp_time = tmp_time + 1;
-          setTime(tmp_time);
-          if (tmp_time > GAME_IN_PROGRES) {
-            setTime(0);
-            clearInterval(interval);
-            endGame().then(() => {
-              setState("게임 종료");
-            });
-          }
-        }, 1000);
-
-        return () => clearInterval(interval);
       });
     } else if (state === "게임 종료") {
       console.log("endGame_rootin 시작!");
@@ -88,23 +73,6 @@ export default function Main() {
         setFinalNumbers(IntFinalNumbers);
         setAnswer(answer);
         // setTopFive(topFive);
-
-        let tmp_time: number = 0;
-
-        const interval = setInterval(() => {
-          tmp_time = tmp_time + 1;
-          setTime(tmp_time);
-          if (tmp_time > GAME_ENDED) {
-            console.log("---- 게임 시작합니데이 ----");
-            setTime(0);
-            clearInterval(interval);
-            startGame().then(() => {
-              setState("게임 시작");
-            });
-          }
-        }, 1000);
-
-        return () => clearInterval(interval);
       });
     } else {
       fetchGameState();
@@ -119,9 +87,9 @@ export default function Main() {
           <BetNum
             state={state}
             luckNumbers={luckNumbers}
-            time={time}
             answer={answer}
             finalNumbers={finalNumbers}
+            setState={setState}
           />
 
           {topFive && <LearderBoard topFive={topFive} />}

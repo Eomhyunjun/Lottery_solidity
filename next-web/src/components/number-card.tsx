@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/utils/ui/button";
-import { bet } from "@/utils/lotteryWeb3";
+import { bet, getOddsRate } from "@/utils/lotteryWeb3";
 
 interface NumberCardProps {
   num: number | null;
@@ -11,13 +11,36 @@ interface NumberCardProps {
 
 export function NumberCard({ num, index, answer, state }: NumberCardProps) {
   const [flipped, setFlipped] = useState(true);
+  const [bettingRate, setBettingRate] = useState<{
+    true: number;
+    false: number;
+  }>({ true: 0, false: 0 });
+  console.log("numbercard");
 
   useEffect(() => {
     setFlipped(state === "게임 종료" || num === 0 ? true : false);
   }, [state, num]);
 
+  useEffect(() => {
+    if (!num) return;
+
+    getRate(num);
+
+    return () => {};
+  }, [num]);
+
+  async function getRate(num: number) {
+    const rate_true: BigInt = await getOddsRate(index, true);
+    const rate_false: BigInt = await getOddsRate(index, false);
+    setBettingRate({ true: Number(rate_true), false: Number(rate_false) });
+  }
+
   return (
-    <div className="perspective-1000 w-[268px] h-[280px] max-w-md p-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+    <div
+      className={`perspective-1000 w-[268px] h-[280px] max-w-md p-8 rounded-lg shadow-lg ${
+        flipped && answer === true && "bg-green-500 dark:bg-green-600"
+      } ${flipped && answer === false && "bg-red-600"}`}
+    >
       <div
         className={`relative w-full h-full transform-style-3d transition-transform duration-700 ${
           flipped ? "rotate-y-180" : ""
@@ -41,7 +64,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                   베팅액: $100
                   <br />
-                  배당율: 2.5x
+                  배당율: {bettingRate.true / 100}배
                 </div>
               </div>
               <div className="flex flex-col items-center">
@@ -56,18 +79,20 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                   베팅액: $50
                   <br />
-                  배당율: 3x
+                  배당율: {bettingRate.false / 100}배
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="card-face absolute w-full h-full backface-hidden rotate-y-180">
-          <div className="flex flex-col items-center justify-center h-full">
+        <div
+          className={`card-face absolute w-full h-full backface-hidden rotate-y-180`}
+        >
+          <div className={`flex flex-col items-center justify-center h-full`}>
             <div className="font-bold text-gray-900 text-3xl dark:text-gray-50">
               {num}
             </div>
-            <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <div className="mt-2 text-m text-white dark:text-white">
               {String(answer)}
             </div>
           </div>

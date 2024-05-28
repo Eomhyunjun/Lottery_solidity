@@ -10,33 +10,28 @@ export default function LearderBoard({ topFive }: any) {
         {topFive &&
           topFive[0].payout !== 0 &&
           topFive.map((betInfo: any, i: number) => {
-            if (betInfo.payout === 0) return <></>;
+            if (betInfo.payout === 0) return null;
 
             return (
-              <>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Avatar>
-                      <AvatarImage
-                        alt="@shadcn"
-                        src="/placeholder-avatar.jpg"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-bold text-gray-900 dark:text-gray-50">
-                        {betInfo.bettor}
-                      </p>
-                      <p className="text-gray-500 dark:text-gray-400">
-                        {betInfo.payout}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="font-bold text-gray-900 dark:text-gray-50">
-                    1st
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Avatar>
+                    <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
+                    {/* <AvatarFallback>CN</AvatarFallback> */}
+                  </Avatar>
+                  <div>
+                    <p className="font-bold text-gray-900 dark:text-gray-50">
+                      {betInfo.bettor}
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {window.web3.utils.fromWei(betInfo.payout, "ether")} ETH
+                    </p>
                   </div>
                 </div>
-              </>
+                <div className="font-bold text-gray-900 dark:text-gray-50">
+                  {i + 1}st
+                </div>
+              </div>
             );
           })}
         {topFive && topFive[0].payout === 0 && (
