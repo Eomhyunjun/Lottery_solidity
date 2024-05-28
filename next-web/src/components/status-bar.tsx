@@ -82,7 +82,7 @@ export function StatusBar({ title, status, now_time }: StatusBarProps) {
       <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
         {statusTime - now_time}초 후에 {ment}
       </div>
-      <MyBettinglist />
+      {/* <MyBettinglist /> */}
     </div>
   );
 }
