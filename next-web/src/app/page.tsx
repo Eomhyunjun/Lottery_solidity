@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import BetNum from "@/components/BetNum";
 import {
   T_IntTopPayout,
@@ -8,7 +8,6 @@ import {
   startGame_rootin,
 } from "@/utils/stateManager";
 import Head from "@/components/Head";
-import WinningNum from "@/components/WinningNum";
 import LearderBoard from "@/components/LearderBoard";
 import { GameState } from "@/types/games";
 import { GAME_ENDED, GAME_IN_PROGRES } from "@/utils/val/time_val";
@@ -29,7 +28,7 @@ export default function Main() {
     { bettor: "", payout: 0 },
   ]);
 
-  async function fetchGameState() {
+  const fetchGameState = useCallback(async () => {
     try {
       const {
         gameStat,
@@ -54,7 +53,7 @@ export default function Main() {
     } finally {
       setInit(true);
     }
-  }
+  }, []);
 
   useEffect(() => {
     fetchGameState();
