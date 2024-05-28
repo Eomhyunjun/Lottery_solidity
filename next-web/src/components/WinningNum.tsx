@@ -10,8 +10,6 @@ export default function WinningNum({
   const [colorBalls, setColorBalls] = useState<any>([]);
 
   useEffect(() => {
-    makeColorBall();
-
     function makeColorBall() {
       if (!finalNumbers && !luckNumbers) return;
 
@@ -20,6 +18,8 @@ export default function WinningNum({
       });
       setColorBalls(tmp);
     }
+
+    makeColorBall();
   }, [finalNumbers, luckNumbers]);
 
   return (

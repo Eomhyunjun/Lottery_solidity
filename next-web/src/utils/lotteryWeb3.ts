@@ -58,7 +58,7 @@ export async function getWalletInfo() {
 
     const accounts: string[] = await window.web3.eth.getAccounts();
     console.log(accounts);
-    const balance: BigInt = await window.web3.eth.getBalance(accounts[0]);
+    const balance: bigint = await window.web3.eth.getBalance(accounts[0]);
 
     return {
       account: accounts[0],

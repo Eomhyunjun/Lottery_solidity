@@ -29,7 +29,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
           return newTime;
         });
       }, 1000);
-    } else if (status === "게임 종료") {
+    } else if (status === "게임 종료 대기") {
       interval = setInterval(() => {
         setTime((prevTime) => {
           let newTime = prevTime + 1;
@@ -57,7 +57,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   }, [status]);
 
   const statusColor = useMemo(() => {
-    if (status === "게임 종료") {
+    if (status === "게임 종료 대기") {
       return "text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-300";
     } else if (status === "게임 진행 중") {
       return "text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300";
@@ -67,7 +67,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   }, [status]);
 
   const barColor = useMemo(() => {
-    if (status === "게임 종료") {
+    if (status === "게임 종료 대기") {
       return " bg-red-500 ";
     } else if (status === "게임 진행 중") {
       return " bg-green-500 ";
@@ -79,7 +79,7 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
   const ment = useMemo(() => {
     if (status === "게임 진행 중") {
       return "게임이 종료됩니다.";
-    } else if (status === "게임 종료") {
+    } else if (status === "게임 종료 대기") {
       return "게임이 시작됩니다.";
     } else {
       return "서버와 연결중입니다...";
@@ -108,7 +108,9 @@ export function StatusBar({ title, status, setState }: StatusBarProps) {
         />
       </div>
       <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-        {status !== "불러오는 중" && `${statusTime - time}초 후에`} {ment}
+        {(status === "게임 진행 중" || status === "게임 종료 대기") &&
+          `${statusTime - time}초 후에`}{" "}
+        {ment}
       </div>
     </div>
   );

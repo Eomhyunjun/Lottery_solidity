@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/utils/ui/button";
-import { bet, getOddsRate } from "@/utils/lotteryWeb3";
+import { bet, getBettingAmount, getOddsRate } from "@/utils/lotteryWeb3";
 
 interface NumberCardProps {
   num: number | null;
@@ -15,25 +15,56 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
     true: number;
     false: number;
   }>({ true: 0, false: 0 });
+  const [betAmount, setBetAmount] = useState<{ true: number; false: number }>({
+    true: 0,
+    false: 0,
+  });
   console.log("numbercard");
 
   useEffect(() => {
-    setFlipped(state === "게임 종료" || num === 0 ? true : false);
+    if (state === "게임 진행 중") {
+      setFlipped(false);
+    } else if (state === "게임 종료 대기") {
+      setFlipped(true);
+    }
   }, [state, num]);
 
   useEffect(() => {
     if (!num) return;
     if (state !== "게임 진행 중") return;
 
-    getRate(num);
+    getRate();
+    getBetAmount();
 
-    return () => {};
+    return () => {
+      setBettingRate({ true: 0, false: 0 });
+      setBetAmount({ true: 0, false: 0 });
+    };
   }, [num, state]);
 
-  async function getRate(num: number) {
-    const rate_true: BigInt = await getOddsRate(index, true);
-    const rate_false: BigInt = await getOddsRate(index, false);
+  async function getRate() {
+    const rate_true: bigint = await getOddsRate(index, true);
+    const rate_false: bigint = await getOddsRate(index, false);
+    console.log(state);
+    console.log(rate_true, rate_false);
+    if (state !== "게임 진행 중") return;
+
+    if (rate_true === undefined || rate_false === undefined) {
+      setTimeout(getRate, 2000);
+    }
     setBettingRate({ true: Number(rate_true), false: Number(rate_false) });
+  }
+
+  async function getBetAmount() {
+    const scale: bigint = BigInt(100);
+
+    const betAmount_true: bigint = await getBettingAmount(index, true);
+    const betAmount_false: bigint = await getBettingAmount(index, false);
+
+    setBetAmount({
+      true: Number(betAmount_true * scale),
+      false: Number(betAmount_false * scale),
+    });
   }
 
   return (
@@ -63,7 +94,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   찬성
                 </Button>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  베팅액: $100
+                  베팅액: {betAmount.true / 100} ETH
                   <br />
                   배당율: {bettingRate.true / 100}배
                 </div>
@@ -78,7 +109,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   반대
                 </Button>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  베팅액: $50
+                  베팅액: {betAmount.false / 100} ETH
                   <br />
                   배당율: {bettingRate.false / 100}배
                 </div>

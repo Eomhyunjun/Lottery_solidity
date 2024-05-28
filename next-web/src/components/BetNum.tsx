@@ -69,7 +69,7 @@ const BetNum = React.memo(function BetNum({
       </h2>
       <div className="grid grid-cols-3 gap-4">{renderNumberCards()}</div>
       <div>
-        {state === "게임 종료" &&
+        {state === "게임 종료 대기" &&
           tmp_finalNumbers?.length > 0 &&
           tmp_finalNumbers[0] !== 0 && (
             <div className="my-[40px]">

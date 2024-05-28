@@ -62,6 +62,7 @@ export default function Main() {
   useEffect(() => {
     if (!init) return;
     if (state === "게임 진행 중") return;
+    if (state === "게임 종료 대기") return;
     if (state === "게임 시작") {
       console.log("startGame_rootin 시작!");
       startGame_rootin().then(({ IntLuckyNumbers }: any) => {
@@ -74,7 +75,8 @@ export default function Main() {
       endGame_rootin().then(({ IntFinalNumbers, answer }) => {
         setFinalNumbers(IntFinalNumbers);
         setAnswer(answer);
-        // setTopFive(topFive);
+        setState("게임 종료 대기");
+        setTopFive(topFive);
       });
     } else {
       fetchGameState();

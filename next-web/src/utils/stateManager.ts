@@ -10,7 +10,7 @@ import {
 
 interface T_TopPayout {
   bettor: string;
-  payout: BigInt;
+  payout: bigint;
 }
 
 export interface T_IntTopPayout {
@@ -42,8 +42,8 @@ export async function initGame() {
   ]);
 
   if (isMetaInitSuccess && isSuccessLocal) {
-    IntLuckyNumbers = luckyNumbers.map((num: BigInt) => Number(num));
-    IntFinalNumbers = finalNumbers.map((num: BigInt) => Number(num));
+    IntLuckyNumbers = luckyNumbers.map((num: bigint) => Number(num));
+    IntFinalNumbers = finalNumbers.map((num: bigint) => Number(num));
     IntGetTopFive = topFive.map((item: T_TopPayout) => {
       return { bettor: item.bettor, payout: Number(item.payout) };
     });
@@ -71,7 +71,7 @@ export async function startGame_rootin() {
     console.log("게임 시작 블록 확정 대기중... ", gameStat);
   }
 
-  const luckyNumbers: BigInt[] = await getLuckyNumbers();
+  const luckyNumbers: bigint[] = await getLuckyNumbers();
   const IntLuckyNumbers: number[] = luckyNumbers
     ? luckyNumbers.map((num) => Number(num))
     : [0, 0, 0];
@@ -95,7 +95,7 @@ export async function endGame_rootin() {
     getTopPayouts(),
   ]);
 
-  const IntFinalNumbers: number[] = finalNumbers.map((num: BigInt) =>
+  const IntFinalNumbers: number[] = finalNumbers.map((num: bigint) =>
     Number(num)
   );
 
