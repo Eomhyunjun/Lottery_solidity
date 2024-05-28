@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NumberCard } from "./number-card";
 import { StatusBar } from "./status-bar";
 import { GameState } from "@/types/games";
 import WinningNum from "./WinningNum";
+import { initUserMetaWallet } from "@/utils/lotteryWeb3";
 
 /**
  * 베팅 관련 View
@@ -37,7 +38,7 @@ export default function BetNum({
   answer,
   finalNumbers,
 }: BetNumProps) {
-  console.log("f", state, luckNumbers, answer, finalNumbers);
+  // console.log("f", state, luckNumbers, answer, finalNumbers);
   const tmp_luckNumbers = useMemo(
     () => (luckNumbers?.length === 3 ? luckNumbers : [0, 0, 0]),
     [luckNumbers]

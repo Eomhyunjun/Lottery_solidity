@@ -13,11 +13,11 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
   const [flipped, setFlipped] = useState(true);
 
   useEffect(() => {
-    setFlipped(state === "게임 종료" ? true : false);
-  }, [state]);
+    setFlipped(state === "게임 종료" || num === 0 ? true : false);
+  }, [state, num]);
 
   return (
-    <div className="perspective-1000 w-[268px] h-[268px] max-w-md p-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+    <div className="perspective-1000 w-[268px] h-[280px] max-w-md p-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
       <div
         className={`relative w-full h-full transform-style-3d transition-transform duration-700 ${
           flipped ? "rotate-y-180" : ""
@@ -31,7 +31,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
             <div className="flex items-center justify-between w-full mt-6">
               <div className="flex flex-col items-center">
                 <Button
-                  className="text-white bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:text-gray-50 dark:hover:bg-green-700"
+                  className="w-full h-full py-[5px] text-white bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:text-gray-50 dark:hover:bg-green-700"
                   size="sm"
                   variant="outline"
                   onClick={() => bet(index, true)}
@@ -46,7 +46,7 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
               </div>
               <div className="flex flex-col items-center">
                 <Button
-                  className="text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:text-gray-50 dark:hover:bg-red-700"
+                  className="w-full h-full py-[5px] text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:text-gray-50 dark:hover:bg-red-700"
                   size="sm"
                   variant="outline"
                   onClick={() => bet(index, false)}

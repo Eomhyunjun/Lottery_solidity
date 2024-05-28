@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import BetNum from "@/components/BetNum";
 import {
+  T_IntTopPayout,
   endGame_rootin,
   initGame,
   startGame_rootin,
@@ -24,22 +25,24 @@ export default function Main() {
   const [finalNumbers, setFinalNumbers] = useState<number[] | undefined>([
     0, 0, 0, 0, 0, 0,
   ]);
-  const [topFive, setTopFive] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const [topFive, setTopFive] = useState<T_IntTopPayout[] | undefined>([
+    { bettor: "", payout: 0 },
+  ]);
 
   async function fetchGameState() {
     try {
-      const { gameStat, IntLuckyNumbers, IntFinalNumbers, isSuccess } =
-        await initGame();
-      console.log(
-        "fetchGameState",
+      const {
         gameStat,
         IntLuckyNumbers,
         IntFinalNumbers,
-        isSuccess
-      );
+        isSuccess,
+        IntGetTopFive,
+      } = await initGame();
+      console.log("fetchGameState", isSuccess);
       if (isSuccess) {
         setLuckyNumbers(IntLuckyNumbers);
         setFinalNumbers(IntFinalNumbers);
+        setTopFive(IntGetTopFive);
         setState(gameStat ? "게임 시작" : "게임 종료");
       } else {
         setState("불러오는 중");
@@ -121,7 +124,7 @@ export default function Main() {
             finalNumbers={finalNumbers}
           />
 
-          <LearderBoard />
+          {topFive && <LearderBoard topFive={topFive} />}
         </div>
       </div>
     </div>

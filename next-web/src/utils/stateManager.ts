@@ -1,5 +1,4 @@
 import {
-  endGame,
   gameAnswer_events,
   getFinalNumbers,
   getGameState,
@@ -7,31 +6,61 @@ import {
   getTopPayouts,
   initLocalWallet,
   initUserMetaWallet,
-  startGame,
 } from "./lotteryWeb3";
+
+interface T_TopPayout {
+  bettor: string;
+  payout: BigInt;
+}
+
+export interface T_IntTopPayout {
+  bettor: string;
+  payout: number;
+}
 
 export async function initGame() {
   const isSuccess = await initUserMetaWallet();
   const isSuccessLocal = await initLocalWallet();
 
-  if (isSuccess && isSuccessLocal) {
-    const gameStat = await getGameState();
-    const luckyNumbers: BigInt[] = gameStat ? await getLuckyNumbers() : [];
-    const IntLuckyNumbers: number[] = luckyNumbers
-      ? luckyNumbers.map((num) => Number(num))
-      : [0, 0, 0];
-    const fianlNumbers: BigInt[] = !gameStat ? await getFinalNumbers() : [];
-    const IntFinalNumbers: number[] = fianlNumbers
-      ? fianlNumbers.map((num) => Number(num))
-      : [0, 0, 0, 0, 0, 0];
-    return { gameStat, IntLuckyNumbers, IntFinalNumbers, isSuccess };
-  }
+  let gameStat: boolean | undefined;
+  let luckyNumbers: BigInt[] | undefined;
+  let IntLuckyNumbers: number[] | undefined;
+  let finalNumbers: BigInt[] | undefined;
+  let IntFinalNumbers: number[] | undefined;
+  let topFive: T_TopPayout[] | undefined;
+  let IntGetTopFive: T_IntTopPayout[] | undefined;
 
+  if (isSuccess && isSuccessLocal) {
+    gameStat = await getGameState();
+
+    if (gameStat) {
+      luckyNumbers = await getLuckyNumbers();
+      IntLuckyNumbers = luckyNumbers
+        ? luckyNumbers.map((num) => Number(num))
+        : [0, 0, 0];
+    } else {
+      finalNumbers = await getFinalNumbers();
+      IntFinalNumbers = finalNumbers
+        ? finalNumbers.map((num) => Number(num))
+        : [0, 0, 0, 0, 0, 0];
+    }
+    topFive = await getTopPayouts();
+    IntGetTopFive = topFive
+      ? topFive.map((bettorInfo: T_TopPayout): T_IntTopPayout => {
+          return {
+            bettor: bettorInfo.bettor,
+            payout: Number(bettorInfo.payout),
+          };
+        })
+      : [{ bettor: "", payout: 0 }];
+    console.log("getTopPayout: ", topFive);
+  }
   return {
-    gameStat: false,
-    luckyNumbers: [0, 0, 0],
-    fianlNumbers: [0, 0, 0, 0, 0, 0],
-    isSuccess: false,
+    gameStat,
+    IntLuckyNumbers,
+    IntFinalNumbers,
+    isSuccess,
+    IntGetTopFive,
   };
 }
 

@@ -19,10 +19,6 @@ export function ConnectWallet() {
   const [isConnected, setIsConnected] = useState(false);
   const [walletData, setWalletData] = useState<T_WalletData | null>();
 
-  useEffect(() => {
-    initUserMetaWallet();
-  }, []);
-
   async function connectWallet() {
     const tmp_walletData: any = await getWalletInfo();
 
