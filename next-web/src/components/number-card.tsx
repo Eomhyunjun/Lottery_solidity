@@ -17,10 +17,10 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
     false: number;
   }>({ true: 0, false: 0 });
   const [betAmount, setBetAmount] = useState<{ true: bigint; false: bigint }>({
-    true: 0,
-    false: 0,
+    true: BigInt(0),
+    false: BigInt(0),
   });
-  const [web3_for_util, setWeb3ForUtil] = useState<Web3>(null);
+  const [web3_for_util, setWeb3ForUtil] = useState<Web3 | null>(null);
   console.log("numbercard");
 
   useEffect(() => {
@@ -43,7 +43,6 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
 
     getRate();
     getBetAmount();
-
     return () => {
       setBettingRate({ true: 0, false: 0 });
       setBetAmount({ true: 0, false: 0 });
@@ -95,7 +94,9 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   className="w-full h-full py-[5px] text-white bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:text-gray-50 dark:hover:bg-green-700"
                   size="sm"
                   variant="outline"
-                  onClick={() => bet(index, true)}
+                  onClick={() => {
+                    bet(index, true);
+                  }}
                 >
                   찬성
                 </Button>
@@ -115,7 +116,9 @@ export function NumberCard({ num, index, answer, state }: NumberCardProps) {
                   className="w-full h-full py-[5px] text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:text-gray-50 dark:hover:bg-red-700"
                   size="sm"
                   variant="outline"
-                  onClick={() => bet(index, false)}
+                  onClick={() => {
+                    bet(index, false);
+                  }}
                 >
                   반대
                 </Button>
