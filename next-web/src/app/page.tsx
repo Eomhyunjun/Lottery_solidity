@@ -68,15 +68,15 @@ export default function Main() {
         console.log("startGame_rootin", IntLuckyNumbers);
         setLuckyNumbers(IntLuckyNumbers);
         let tmp_time: number = 0;
+
         const interval = setInterval(() => {
           tmp_time = tmp_time + 1;
           setTime(tmp_time);
           if (tmp_time > GAME_IN_PROGRES) {
             setTime(0);
-
+            clearInterval(interval);
             endGame().then(() => {
               setState("게임 종료");
-              clearInterval(interval);
             });
           }
         }, 1000);
@@ -91,15 +91,16 @@ export default function Main() {
         // setTopFive(topFive);
 
         let tmp_time: number = 0;
+
         const interval = setInterval(() => {
           tmp_time = tmp_time + 1;
           setTime(tmp_time);
           if (tmp_time > GAME_ENDED) {
             console.log("---- 게임 시작합니데이 ----");
             setTime(0);
+            clearInterval(interval);
             startGame().then(() => {
               setState("게임 시작");
-              clearInterval(interval);
             });
           }
         }, 1000);
