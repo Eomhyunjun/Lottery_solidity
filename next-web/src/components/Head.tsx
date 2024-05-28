@@ -7,7 +7,7 @@ import Image from "next/image";
 import React from "react";
 import { ConnectWallet } from "./connect-wallet";
 
-export default function Head() {
+const Head = React.memo(function Head() {
   return (
     <>
       <div className="flex justify-center gap-4 ">
@@ -48,4 +48,6 @@ export default function Head() {
       </div>
     </>
   );
-}
+});
+
+export default Head;

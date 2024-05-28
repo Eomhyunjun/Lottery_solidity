@@ -4,7 +4,7 @@ export function abbreviateString(str: string) {
     return str;
   }
 
-  console.log(str);
+  console.log("slice_str: ", str);
 
   const start = str.slice(0, 6);
   const end = str.slice(-5);
