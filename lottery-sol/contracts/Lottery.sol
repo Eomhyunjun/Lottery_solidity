@@ -211,11 +211,6 @@ contract Lottery {
         return true;
     }
 
-    function getBettingAmount(uint number, bool status) public view returns (uint) {
-        return games[_games_tail].bettingAmount[number][status]; // 해당 번호와 상태에 대한 베팅 금액
-    
-    }
-
     // 상위 5명 상금 업데이트 함수
     function updateTopPayouts(address bettor, uint256 payout) private {
         for (uint i = 0; i < topPayouts.length; i++) {
@@ -251,4 +246,21 @@ contract Lottery {
     function getTopPayouts() public view returns (PayoutInfo[5] memory) {
         return topPayouts;
     }
+
+    function getBettingAmount(uint number, bool status) public view returns (uint) {
+        return games[_games_tail].bettingAmount[number][status]; // 해당 번호와 상태에 대한 베팅 금액
+    }
+
+    function getLuckyNumbers(uint256 gameIndex) public view returns (uint[3] memory) {
+        return games[gameIndex].luckyNumbers;
+    }
+
+    function getFinalNumbers(uint256 gameIndex) public view returns (uint[6] memory) {
+        return games[gameIndex].finalNumbers;
+    }
+
+    function getWinners(uint256 gameIndex) public view returns (bool[3] memory) {
+        return games[gameIndex].winner;
+    }
+
 }
